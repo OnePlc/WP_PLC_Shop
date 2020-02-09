@@ -10,8 +10,8 @@ Also supporting Elementor with a couple of widgets.
 
 ## Requirements
 
-Requires an active onePlace Installation for Product Management 
-and more. Requires Wordpress 5.3.x. Elementor 2.8. is optional but recommended.
+Requires an active onePlace Installation with [Basket WP Bridge Plugin](https://github.com/OnePlc/PLC_X_Basket_WP_Bridge)
+Requires Wordpress 5.3.x. Elementor 2.8. is optional but recommended.
 
 ## installation
 
