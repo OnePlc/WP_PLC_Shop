@@ -62,30 +62,17 @@ final class Elementor {
      * @since 1.0.0
      */
     public function initElementorWidgets() {
-        /**
-        // Article Slider Widget
-        if(get_option('plcshop_elementor_widget_article_slider_active') == 1) {
-            require_once(__DIR__ . '/../elementor/widgets/article-slider.php');
-            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Slider());
-        } **/
-
         // Basket Widget
         if(get_option('plcshop_elementor_widget_basket_active') == 1) {
             require_once(__DIR__ . '/../Elementor/Widgets/Basket.php');
             \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Basket());
         }
-        /**
-        // Featured Box Widget
-        if(get_option('plcshop_elementor_widget_featuredbox_active') == 1) {
-            require_once(__DIR__ . '/../elementor/widgets/featured-article.php');
-            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_FeaturedBox());
-        }
 
-        // Showcase Big Widget
-        if(get_option('plcshop_elementor_widget_showcase_active') == 1) {
-            require_once(__DIR__ . '/../elementor/widgets/showcase_big.php');
-            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Showcasebig());
-        } **/
+        // Article Slider Widget
+        if(get_option('plcshop_elementor_widget_article_slider_active') == 1) {
+            require_once(__DIR__ . '/../Elementor/Widgets/Slider.php');
+            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Slider());
+        }
     }
 
     /**

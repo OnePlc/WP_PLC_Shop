@@ -2,7 +2,7 @@
 /**
  * Elementor Basket Widget
  *
- * @package   OnePlace\Swissknife\Modules
+ * @package   OnePlace\Shop\Modules
  * @copyright 2020 Verein onePlace
  * @license   https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html GNU General Public License, version 2
  * @link      https://1plc.ch/wordpress-plugins/shop

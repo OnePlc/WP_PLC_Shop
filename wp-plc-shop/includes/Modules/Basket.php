@@ -32,8 +32,42 @@ final class Basket {
         // enqueue slider custom scripts for frontend
         add_action( 'wp_enqueue_scripts', [$this,'enqueueScripts'] );
 
-        # Register Update Settings AJAX Hook
+        # Register AJAX Hooks
         add_action('wp_ajax_plc_showbasket', [ $this, 'showBasket' ] );
+        add_action('wp_ajax_plc_addtobasket', [ $this, 'addToBasket' ] );
+    }
+
+    /**
+     * Add Item to Basket (AJAX)
+     *
+     * @since 1.0.0
+     */
+    public function addToBasket() {
+        # only execute if started from our javascript
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if(!session_id()) {
+                session_start();
+            }
+
+            $iItemID = $_REQUEST['shop_item_id'];
+            $sItemType = $_REQUEST['shop_item_type'];
+
+            # Get Articles from onePlace API
+            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/add', [
+                'shop_session_id' => session_id(),
+                'shop_item_id' => (int)$iItemID,
+                'shop_item_type' => $sItemType,
+            ]);
+
+            if ($oAPIResponse->state == 'success') {
+                echo $oAPIResponse->message;
+            } else {
+                echo 'no json success';
+            }
+        }
+
+        # Don't forget to always exit in the ajax function.
+        exit();
     }
 
     /**
@@ -50,6 +84,9 @@ final class Basket {
 
             # Get Articles from onePlace API
             $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
+
+            echo session_id();
+
 
             if ($oAPIResponse->state == 'success') {
                 echo $oAPIResponse->message;
