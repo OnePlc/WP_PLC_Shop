@@ -63,6 +63,7 @@ final class Settings {
         register_setting( 'wpplc_shop', 'plcshop_elementor_active', false );
         register_setting( 'wpplc_shop', 'plcshop_currency_main', '$' );
         register_setting( 'wpplc_shop', 'plcshop_currency_pos', 'before' );
+        register_setting( 'wpplc_shop', 'plcshop_basket_slug', 'basket' );
     }
 
     /**

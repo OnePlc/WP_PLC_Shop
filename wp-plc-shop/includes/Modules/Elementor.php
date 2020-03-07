@@ -48,12 +48,11 @@ final class Elementor {
      * @since 1.0.0
      */
     public function enqueueScripts() {
-        /**
         if(get_option('plcshop_elementor_widget_article_slider_active') == 1) {
-            wp_enqueue_script('shop-article-slider', '/wp-content/plugins/wp-plc-shop/assets/js/article-slider.js', ['jquery']);
-            wp_enqueue_style( 'shop-article-slider-style', '/wp-content/plugins/wp-plc-shop/assets/css/article-slider.css');
+            wp_enqueue_script('shop-article-slider', plugins_url('assets/js/article-slider.js', WPPLC_SHOP_PLUGIN_MAIN_FILE), ['jquery']);
+            //wp_enqueue_style( 'shop-article-slider-style', '/wp-content/plugins/wp-plc-shop/assets/css/article-slider.css');
         }
-         * **/
+        wp_enqueue_style( 'shop-base-style', plugins_url('assets/css/shop-base-style.css', WPPLC_SHOP_PLUGIN_MAIN_FILE));
     }
 
     /**
@@ -72,6 +71,18 @@ final class Elementor {
         if(get_option('plcshop_elementor_widget_article_slider_active') == 1) {
             require_once(__DIR__ . '/../Elementor/Widgets/Slider.php');
             \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Slider());
+        }
+
+        // Article Showcase Widget
+        if(get_option('plcshop_elementor_widget_showcase_active') == 1) {
+            require_once(__DIR__ . '/../Elementor/Widgets/Showcase.php');
+            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Showcase());
+        }
+
+        // Article Single Box Widget
+        if(get_option('plcshop_elementor_widget_featuredbox_active') == 1) {
+            require_once(__DIR__ . '/../Elementor/Widgets/Singlebox.php');
+            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Singlebox());
         }
     }
 

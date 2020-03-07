@@ -70,8 +70,8 @@
                 <?php
                 // Include Settings Pages
                 require_once __DIR__.'/settings/general.php';
-                //require_once __DIR__.'/partials/basket.php';
-                //require_once __DIR__.'/partials/gateways.php';
+                require_once __DIR__.'/settings/basket.php';
+                require_once __DIR__.'/settings/gateways.php';
                 if(get_option( 'plcshop_elementor_active') == 1) {
                     require_once __DIR__.'/settings/elementor.php';
                 }

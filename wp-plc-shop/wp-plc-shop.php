@@ -25,6 +25,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
+if(!session_id()) {
+    session_start();
+}
+
 // Define global constants
 define( 'WPPLC_SHOP_VERSION', '1.0.0' );
 define( 'WPPLC_SHOP_PLUGIN_MAIN_FILE', __FILE__ );
