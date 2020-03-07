@@ -43,13 +43,104 @@
     <hr />
 
     <h4 class="plc-cart-summary-title">Ihre Bestellung</h4>
-    <div class="plc-shop-basket plc-shop-basket-confirm">
-        <img src="<?=WPPLC_SHOP_PUB_DIR?>/assets/img/ajax-loader.gif" />
-    </div>
-    <script>
-        jQuery.post('<?=WPPLC_SHOP_PUB_DIR?>/includes/elementor/widgets/view/basket.php',{mode:'readonly'},function(retHTML) {
-            jQuery('.plc-shop-basket').html(retHTML);
-        })
-    </script>
+    <?php
+    $aItems = $oInfo->positions;
+    if (count($aItems) > 0) { ?>
+        <table class="plc-shop-form plc-shop-basket-table">
+            <thead>
+            <tr>
+                <th style="width:120px">Bild</th>
+                <th>Artikel</th>
+                <th>Preis</th>
+                <th>Anz.</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $dBasketTotal = 0;
+            $dDeliveryFee = 2.5;
+            foreach ($aItems as $oItem) {
+                $dPrice = $oItem->price; ?>
+                <tr data-pos-id="<?=$oItem->id?>">
+                    <td data-title="">
+                        <div class="plc-shop-basket-pos-img"
+                             style="background:url(<?= $sHost ?>/data/article/<?= $oItem->article_idfs ?>/avatar.png) no-repeat 100% 50%; background-size:cover;">
+                            &nbsp;
+                        </div>
+                    </td>
+                    <td data-title="Artikel:">
+                        <?php
+                        switch ($oItem->article_type) {
+                            case 'event':
+                                echo $oItem->oEvent->label.' am '.date('d.m.Y',strtotime($oItem->oEvent->date_start));
+                                echo '<br/><small>'.$oItem->oArticle->label.'</small>';
+                                break;
+                            case 'variant':
+                                $dPrice = $oItem->oVariant->price;
+                                echo $oItem->oArticle->label . ': ' . $oItem->oVariant->label;
+                                break;
+                            case 'article':
+                            case 'custom':
+                                echo $oItem->oArticle->label;
+                                break;
+                            default:
+                                break;
+                        }
+                        ?>
+                        <?php if($oItem->comment != '') { ?>
+                            <br/><small>Geschenkgutschein - Widmung: <?=$oItem->comment?></small>
+                        <?php } ?>
+                    </td>
+                    <td data-title="Preis:"><?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dPrice, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?></td>
+                    <td data-title="Anzahl:">
+                        <?= $oItem->amount ?>
+                    </td>
+                    <td data-title="Total:"><?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dPrice * $oItem->amount, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?></td>
+                </tr>
+                <?php
+                $dBasketTotal += ($dPrice * $oItem->amount);
+            } ?>
+            </tbody>
+        </table>
+
+        <div style="width:100%; display: inline-block;">
+            <?php
+            if($dBasketTotal >= 100) {
+                $dDeliveryFee = 0;
+            }
+            ?>
+            <div style="float:right;" class="plc-shop-form plc-shop-basket-summary">
+                <h4>Warenkorb Summe</h4>
+                <table>
+                    <tbody>
+                    <tr>
+                        <th>Zwischensumme</th>
+                        <td data-title="Zwischensumme">
+                            <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dBasketTotal, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Versand (nur bei Postversand)</th>
+                        <td data-title="Versand">
+                            <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dDeliveryFee, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Gesamtsumme</th>
+                        <td data-title="Gesamtsumme">
+                            <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dBasketTotal + $dDeliveryFee, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="/<?=$sBasketSlug?>/pay" class="plc-shop-checkout-button">
+                    <i class="<?=str_replace(['fa-3x','fa-4x','fa-2x'],[],$oInfo->paymentmethod->icon)?>" style="width:20px;"></i>
+                    Jetzt mit <?=$oInfo->paymentmethod->label?> bezahlen
+                </a>
+            </div>
+        </div>
+    <?php }
+    ?>
     <hr />
 </form>

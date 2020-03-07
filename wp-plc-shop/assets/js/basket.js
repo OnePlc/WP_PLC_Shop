@@ -43,7 +43,7 @@ jQuery(function() {
                 width:'600px',
                 showCancelButton: true,
                 cancelButtonText: 'Abbrechen',
-                confirmButtonText: '<i class="fas fa-cart-arrow-down plc-shop-popup-buy-icon"></i> Buchen',
+                confirmButtonText: '<i class="fas fa-cart-arrow-down plc-shop-popup-buy-icon"></i> Kaufen',
                 showLoaderOnConfirm: true,
                 html:retHTML
             }).then(function(result) {

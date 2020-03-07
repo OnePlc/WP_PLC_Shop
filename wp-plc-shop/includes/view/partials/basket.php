@@ -6,7 +6,7 @@ if(isset($oAPIResponse->items)) {
     }
 }
 $sBasketSlug = get_option('plcshop_basket_slug');
-
+echo session_id();
 if (count($aItems) > 0) { ?>
     <table class="plc-shop-form plc-shop-basket-table">
         <thead>

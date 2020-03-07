@@ -63,7 +63,7 @@ switch($sStep) {
         </li>
         <li class="<?=$sClassDelivery?>">
             <?php if($sClassPayment != '') { ?>
-            <a href="/kasse/address">
+            <a href="/<?=$sBasketSlug?>/address">
                 <?php } else { ?>
                 <em>
                     <?php } ?>
@@ -79,7 +79,7 @@ switch($sStep) {
         </li>
         <li class="<?=$sClassPayment?>">
             <?php if($sClassReview != '') { ?>
-            <a href="/kasse/payment">
+            <a href="/<?=$sBasketSlug?>/payment">
                 <?php } else { ?>
                 <em>
                     <?php } ?>

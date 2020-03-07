@@ -1,11 +1,13 @@
 <form method="POST" action="/<?=$sBasketSlug?>/payment" class="plc-shop-form">
+    <?php if(isset($oAPIResponse->deliverymethods)) { ?>
     <div style="width:100%; display: inline-block; padding:8px;">
         <?php $iDelivery = (!empty($oAPIResponse->basket->deliverymethod_idfs)) ? $oAPIResponse->basket->deliverymethod_idfs : 1; ?>
         Wie möchten Sie Ihre Gutscheine / Tickets erhalten ?<br/>
-        <input type="radio" name="address_deliverymethod" value="1"<?=($iDelivery == 1) ? ' checked ' : ''?>/> Per E-Mail &nbsp;&nbsp;
-        <input type="radio" name="address_deliverymethod" value="2"<?=($iDelivery == 2) ? ' checked ' : ''?>/> Per Post
+        <?php foreach($oAPIResponse->deliverymethods as $oDelMethod) { ?>
+        <input type="radio" name="address_deliverymethod" value="<?=$oDelMethod->id?>"<?=($iDelivery == $oDelMethod->id) ? ' checked ' : ''?>/> <?=$oDelMethod->label?>
+        <?php } ?>
     </div>
-
+    <?php } ?>
     <div style="display: inline-block; width:100%;">
         <div style="width:100%; float:left; display: inline-block;">
             <div class="plc-shop-checkout-address-salution">
@@ -54,7 +56,7 @@
             <label for="address_email">
                 E-Mail Adresse*
             </label>
-            <?php $sVal = (isset($oContact)) ? $oContact->email : ''?>
+            <?php $sVal = (isset($oContact)) ? $oContact->email_private : ''?>
             <input type="email" name="address_email" class="plc-shop-input"  value="<?=$sVal?>" />
         </div>
         <div class="plc-shop-checkout-formcontrol">

@@ -61,15 +61,38 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
 
         switch($sStep) {
             case 'confirm':
+                $aAPIData = [
+                    'paymentmethod' => $_REQUEST['shop_paymentmethod'],
+                ];
                 $bPaymentCancelled = false;
-                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/confirm', ['shop_session_id'=>session_id()]);
+                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/confirm', ['shop_session_id'=>session_id()],$aAPIData);
                 $oInfo = $oAPIResponse;
                 require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/confirm.php';
                 break;
             case 'payment':
-                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/payment', ['shop_session_id'=>session_id()]);
-                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
-                require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment.php';
+                $aAddressData = [];
+                if(isset( $_REQUEST['address_firstname'])) {
+                    $aAddressData = [
+                        'salutation' => $_REQUEST['address_salution'],
+                        'firstname' => $_REQUEST['address_firstname'],
+                        'lastname' => $_REQUEST['address_lastname'],
+                        'email' => $_REQUEST['address_email'],
+                        'phone' => $_REQUEST['address_phone'],
+                        'street' => $_REQUEST['address_street'],
+                        'zip' => $_REQUEST['address_zip'],
+                        'city' => $_REQUEST['address_city'],
+                        'deliverymethod' => $_REQUEST['address_deliverymethod'],
+                        'comment' => $_REQUEST['address_comment'],
+                    ];
+                }
+                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/payment', ['shop_session_id'=>session_id()],$aAddressData);
+                if($oAPIResponse->state == 'success') {
+                    $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+                    require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment.php';
+                } else {
+                    var_dump($oAPIResponse);
+                    echo 'ERROR CONNECTING TO SHOP SERVER - PLEASE TRY AGAIN';
+                }
                 break;
             case 'address':
                 $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/checkout', ['shop_session_id'=>session_id()]);
