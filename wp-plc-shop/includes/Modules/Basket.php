@@ -22,6 +22,7 @@ final class Basket {
      * @since 1.0.0
      */
     private static $instance = null;
+    private $bMenuAdded = false;
 
     /**
      * Shop Elementor Integration
@@ -39,6 +40,12 @@ final class Basket {
 
         // add shop custom rewrites
         add_action('init', [$this,'registerRewriteRules'], 10, 0);
+
+        // Add Icon to Basket
+        if(get_option('plcshop_basket_icon_menu')) {
+            // add cart icon to main menu
+            add_filter( 'wp_nav_menu_items', [$this,'shopMenuIcon'], 10, 2 );
+        }
     }
 
     /**
@@ -53,8 +60,6 @@ final class Basket {
         // Shop Basket
         $iBasketPageID = get_option( 'plcshop_pages_basket' );
         $sBasketSlug = get_option('plcshop_basket_slug');
-
-        add_rewrite_rule('^warenkorb/?','index.php?page_id='.$iBasketPageID,'top');
 
         // Shop Checkout
         add_rewrite_rule('^'.$sBasketSlug.'/([^/]*)/?','index.php?page_id='.$iBasketPageID.'&checkoutstep=$matches[1]','top');
@@ -113,6 +118,7 @@ final class Basket {
             if ($oAPIResponse->state == 'success') {
                 echo $oAPIResponse->message;
             } else {
+                var_dump($oAPIResponse);
                 echo 'no json success';
             }
         }
@@ -122,35 +128,40 @@ final class Basket {
     }
 
     /**
-     * Show Basket (Ajax)
+     * Cart icon for wordpress navigation
      *
      * @since 1.0.0
+     * @param $items
+     * @param $args
+     * @return string
      */
-    public function showBasket() {
-        # only execute if started from our javascript
-        if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if(!session_id()) {
-                session_start();
-            }
+    public function shopMenuIcon($items, $args) {
+        # get all menus and check if we have to attach icon to one
+        $sMenuLocation = get_option( 'plcshop_basket_icon_menu' );
+        $theme_locations = get_nav_menu_locations();
+        $menu_obj = get_term( $theme_locations[$sMenuLocation], 'nav_menu' );
+        $menu_name = $menu_obj->name;
 
-            # Get Articles from onePlace API
+        # the function runs twice as it seems - we only want to add and run our code once
+        if (strtolower($args->menu->name) == strtolower($menu_name) && !$this->bMenuAdded) {
+            # get basket slug from settings
+            $sBasketSlug = (get_option('plcshop_basket_slug')) ? get_option('plcshop_basket_slug') : 'basket';
+            # only run code once
+            $this->bMenuAdded = true;
+            # get basket from oneplace
             $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
-
-            echo session_id();
-
-            if ($oAPIResponse->state == 'success') {
-                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
-                $sMode = 'default';
-                $oBasket = $oAPIResponse->oBasket;
-
-                require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
-            } else {
-                echo 'no json success';
+            $iCount = 0;
+            if($oAPIResponse->state == 'success') {
+                $iCount = count($oAPIResponse->items);
             }
-        }
 
-        # Don't forget to always exit in the ajax function.
-        exit();
+            $items .= '<li class="menu-item menu-item-type-custom menu-item-object-custom" style="padding-top:12px; background:transparent;">';
+            $items .= '<a href="/'.$sBasketSlug.'" style="margin:0 12px 0 12px; padding:0;">';
+            $items .= '<i class="fas fa-shopping-cart shop-badge" style="color:#626261;"></i>';
+            $items .= ' <span class="plc-shop-badge-counter" style="right:-12px; bottom:-10px; position:absolute; width:16px; height:16px; background:red; padding-left:4px; border-radius: 50%; line-height:16px; color:#fff; font-size:12px;">';
+            $items .= $iCount.'</span></a></li>';
+        }
+        return $items;
     }
 
     /**

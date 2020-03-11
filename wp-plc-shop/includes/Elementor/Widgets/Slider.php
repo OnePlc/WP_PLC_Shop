@@ -10,50 +10,112 @@
  */
 
 class WPPLC_Shop_Slider extends \Elementor\Widget_Base {
+    /**
+     * WPPLC_Shop_Slider constructor.
+     *
+     * @param array $data
+     * @param null $args
+     * @since 1.0.0
+     */
     public function __construct($data = [], $args = null) {
         parent::__construct($data, $args);
     }
 
+    /**
+     * Unique Name for Elementor Editor (internal)
+     *
+     * @return string
+     * @since 1.0.0
+     */
     public function get_name() {
         return 'wpplcshopslider';
     }
 
+    /**
+     * Display Name for Elementor Editor
+     *
+     * @return mixed
+     * @since 1.0.0
+     */
     public function get_title() {
         return __('Article Slider', 'wp-plc-shop');
     }
 
+    /**
+     * Icon for Elementor Editor
+     *
+     * @return string
+     * @since 1.0.0
+     */
     public function get_icon() {
         return 'fa fa-images';
     }
 
+    /**
+     * Category for Elementor Editor
+     *
+     * @return array
+     * @since 1.0.0
+     */
     public function get_categories() {
         return ['wpplc-shop'];
     }
 
+    /**
+     * Render Elementor Widget
+     *
+     * @since 1.0.0
+     */
     protected function render() {
         $aSettings = $this->get_settings_for_display();
 
         # Get Articles from onePlace API
-        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0', ['listmode'=>'entity']);
+        $aParams = ['listmode'=>'entity'];
+        if($aSettings['slider_base_category'] != '' && $aSettings['slider_base_category'] != 0) {
+            $aParams['filter'] = 'category';
+            $aParams['filtervalue'] = $aSettings['slider_base_category'];
+        }
+        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0', $aParams);
 
         if ($oAPIResponse->state == 'success') {
-            echo $oAPIResponse->message;
+            $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+            $sSliderID = \Elementor\Utils::generate_random_string();
+
+            require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/article_slider.php';
         } else {
             echo 'ERROR CONNECTING TO SHOP SERVER';
         }
 
-        require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/article_slider.php';
     }
 
+    /**
+     * Elementor Editor Template
+     *
+     * @since 1.0.0
+     */
     protected function _content_template() {
 
     }
 
+    /**
+     * Elementor Widget Controls
+     *
+     * @since 1.0.0
+     */
     protected function _register_controls() {
         /**
          * Get Data from onePlace API
          */
         $aOptions = [];
+        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/tag/api/list/article-single/category', []);
+        if(is_object($oAPIResponse)) {
+            if($oAPIResponse->state == 'success') {
+                foreach($oAPIResponse->results as $oCat) {
+                    $aOptions[$oCat->id] = $oCat->text;
+                }
+            }
+        }
+
 
         /**
          * Slider General Settings - START
@@ -342,6 +404,43 @@ class WPPLC_Shop_Slider extends \Elementor\Widget_Base {
         $this->end_controls_section();
         /**
          * "Gift" Button Settings - END
+         */
+
+        /**
+         * Slide Slide Settings - START
+         */
+        $this->start_controls_section(
+            'slider_slide_style',
+            [
+                'label' => __( 'Slides', 'wp-plc-shop' ),
+                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Background::get_type(),
+            [
+                'name' => 'article_slider_slide_background',
+                'label' => __( 'Background', 'oneplace' ),
+                'types' => [ 'classic', 'gradient', 'video' ],
+                'selector' => '{{WRAPPER}} .plc-slider-slide-content',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_slide_padding',
+            [
+                'label' => __( 'Padding', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors' => [
+                    '{{WRAPPER}} .plc-slider-slide-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+        /**
+         * Slide Slide Settings - END
          */
 
         /**
@@ -742,6 +841,7 @@ class WPPLC_Shop_Slider extends \Elementor\Widget_Base {
                 'separator' => 'before',
             ]
         );
+        // Buttons Border Radius
         $this->add_control(
             'slider_slide_buttons_border_radius',
             [
@@ -753,6 +853,7 @@ class WPPLC_Shop_Slider extends \Elementor\Widget_Base {
                 ],
             ]
         );
+        // Buttons Box Shadow
         $this->add_group_control(
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
@@ -760,6 +861,7 @@ class WPPLC_Shop_Slider extends \Elementor\Widget_Base {
                 'selector' => '{{WRAPPER}} .plc-slider-button',
             ]
         );
+        // Buttons Padding
         $this->add_responsive_control(
             'slider_slide_buttons_text_padding',
             [

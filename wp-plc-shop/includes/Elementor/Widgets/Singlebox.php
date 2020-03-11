@@ -37,17 +37,16 @@ class WPPLC_Shop_Singlebox extends \Elementor\Widget_Base {
 
         # Get Articles from onePlace API
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/get/'.$iArticleID, ['listmode'=>'entity']);
-
-        if ($oAPIResponse->state == 'success') {
-            echo $oAPIResponse->message;
-        } else {
-            echo 'ERROR CONNECTING TO SHOP SERVER';
-        }
-
-        $oItem = $oAPIResponse->oItem;
         $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
 
-        require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/article_singlebox.php';
+        if ($oAPIResponse->state == 'success') {
+            $oItem = $oAPIResponse->oItem;
+
+            require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/article_singlebox.php';
+        } else {
+            var_dump($oAPIResponse);
+            echo 'ERROR CONNECTING TO SHOP SERVER';
+        }
     }
 
     protected function _content_template() {
@@ -217,6 +216,19 @@ class WPPLC_Shop_Singlebox extends \Elementor\Widget_Base {
                     'no' => __( 'No', 'wp-plc-shop' ),
                     'yes' => __( 'Yes', 'wp-plc-shop' ),
                 ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'featured_custom_text_margin',
+            [
+                'label' => __( 'Margin', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors' => [
+                    '{{WRAPPER}} .plc-shop-singlebox-customtext' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'separator' => 'before',
             ]
         );
 

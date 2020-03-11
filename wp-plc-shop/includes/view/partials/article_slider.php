@@ -16,7 +16,7 @@
                     <!-- Slide Image -->
                     <figure class="plc-slider-image-box-img" style="width:100%; margin-bottom: <?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>;">
                         <a href="#<?=$oItem->id?>" class="plc-shop-article-popup" title="Mehr Informationen">
-                            <div style="height:200px; width:100%; min-width:100%; background:url(<?=$sHost?>/data/article/<?=$oItem->id?>/avatar.png) no-repeat 100% 50%; background-size:cover;">
+                            <div style="height:200px; width:100%; min-width:100%; background:url('<?=$sHost?><?=$oItem->featured_image?>') no-repeat 100% 50%; background-size:cover;">
                                 &nbsp;
                             </div>
                         </a>
@@ -62,11 +62,20 @@
                              * Article Variants Plugin - START
                              */
                             if (isset($oItem->variants)) { ?>
-                                <?php if (count($oItem->variants) > 0) { ?>
+                                <?php if (count($oItem->variants) > 0) {
+                                    $sCurrency = get_option('plcshop_currency_main');
+                                    $sDecPoint = ($sCurrency == '€') ? ',' : '.';
+                                    $sThsndSep = ($sCurrency == '€') ? '.' : '\'';
+                                    ?>
                                     <select class="plc-slider-slide-price" plc-item-type="variant">
-                                        <?php foreach ($oItem->variants as $oVar) { ?>
+                                        <?php foreach ($oItem->variants as $oVar) {
+                                            $sVarLabel = $oVar->label.' - '.$sCurrency.' '.number_format($oVar->price,2,$sDecPoint,$sThsndSep);
+                                            if(get_option('plcshop_currency_pos') == 'after') {
+                                                $sVarLabel = $oVar->label.' - '.number_format($oVar->price,2,$sDecPoint,$sThsndSep).' '.$sCurrency;
+                                            }
+                                            ?>
                                             <option value="<?= $oVar->id ?>">
-                                                <?= $oVar->label ?> - <?= $oVar->price ?>
+                                                <?=$sVarLabel?>
                                             </option>
                                         <?php } ?>
                                     </select>
@@ -86,35 +95,34 @@
                         ?>
                             </div>
                          </div>
-
-                        <!-- Slide Buttons -->
-                        <div style="width:100%; display: inline-block;">
-                            <?php if($aSettings['slider_slide_show_button_buy'] == 'yes') { ?>
-                                <div style="width:50%; float:left;">
-                                    <!-- Buy Button -->
-                                    <?php $sBuyCls = ($aSettings['slider_slide_show_popup_basket'] == 'yes') ? 'plc-shop-additem-tobasket' : 'plc-shop-additemwithamount-tobasket'?>
-                                    <a href="#<?=$oItem->id?>" class="<?=$sBuyCls?> plc-slider-button" plc-item-type="<?=(isset($oItem->variants)) ? 'variant' : 'article'?>" style="display:inline-block; width:<?=$aSettings['buttons_slide_width']?>;">
-                                        <i class="<?=$aSettings['btn1_selected_icon']['value']?>" aria-hidden="true"></i>
-                                        &nbsp;<?=$aSettings['btn1_text']?>
-                                    </a>
-                                    <!-- Buy Button -->
-                                </div>
-                            <?php } ?>
-
-                            <?php if($aSettings['slider_slide_show_button_gift'] == 'yes') { ?>
-                                <div style="width:50%; float:left; padding-left:<?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>;">
-                                    <!-- Gift Button -->
-                                    <a href="#<?=$oItem->id?>" class="plc-shop-giftitem-tobasket plc-slider-button" plc-item-type="<?=(isset($oItem->variants)) ? 'variant' : 'article'?>" style="display:inline-block; width:<?=$aSettings['buttons_slide_width']?>;">
-                                        <i class="<?=$aSettings['btn2_selected_icon']['value']?>" aria-hidden="true"></i>
-                                        &nbsp;<?=$aSettings['btn2_text']?>
-                                    </a>
-                                    <!-- Gift Button -->
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <!-- Slide Buttons -->
                     </div>
                     <!-- Slide Content -->
+                    <!-- Slide Buttons -->
+                    <div style="width:100%; display: inline-block;">
+                        <?php if($aSettings['slider_slide_show_button_buy'] == 'yes') { ?>
+                            <div style="width:50%; float:left;">
+                                <!-- Buy Button -->
+                                <?php $sBuyCls = ($aSettings['slider_slide_show_popup_basket'] == 'yes') ? 'plc-shop-additem-tobasket' : 'plc-shop-additemwithamount-tobasket'?>
+                                <a href="#<?=$oItem->id?>" class="<?=$sBuyCls?> plc-slider-button" plc-item-type="<?=(isset($oItem->variants)) ? 'variant' : 'article'?>" style="display:inline-block; width:<?=$aSettings['buttons_slide_width']?>;">
+                                    <i class="<?=$aSettings['btn1_selected_icon']['value']?>" aria-hidden="true"></i>
+                                    &nbsp;<?=$aSettings['btn1_text']?>
+                                </a>
+                                <!-- Buy Button -->
+                            </div>
+                        <?php } ?>
+
+                        <?php if($aSettings['slider_slide_show_button_gift'] == 'yes') { ?>
+                            <div style="width:50%; float:left; padding-left:<?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>;">
+                                <!-- Gift Button -->
+                                <a href="#<?=$oItem->id?>" class="plc-shop-giftitem-tobasket plc-slider-button" plc-item-type="<?=(isset($oItem->variants)) ? 'variant' : 'article'?>" style="display:inline-block; width:<?=$aSettings['buttons_slide_width']?>;">
+                                    <i class="<?=$aSettings['btn2_selected_icon']['value']?>" aria-hidden="true"></i>
+                                    &nbsp;<?=$aSettings['btn2_text']?>
+                                </a>
+                                <!-- Gift Button -->
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <!-- Slide Buttons -->
                 </div>
             </div>
         <?php

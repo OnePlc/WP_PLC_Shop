@@ -74,14 +74,14 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'section_slider_settings',
             [
-                'label' => __('Slider Einstellungen', 'oneplace'),
+                'label' => __('Slider Settings', 'wp-plc-shop'),
             ]
         );
 
         $this->add_control(
             'slider_base_category',
             [
-                'label' => __('Kategorie', 'wpplc'),
+                'label' => __('Category', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::SELECT,
                 'options' => $aOptions,
                 'default' => ['0'=>'Alle'],
@@ -181,7 +181,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'showcase_title',
             [
-                'label' => __('Titel', 'wpplc'),
+                'label' => __('Title', 'wp-plc-shop'),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -198,19 +198,19 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'showcase_title_align',
             [
-                'label' => __('Alignment', 'wpplc'),
+                'label' => __('Alignment', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::CHOOSE,
                 'options' => [
                     'left' => [
-                        'title' => __('Left', 'wpplc'),
+                        'title' => __('Left', 'wp-plc-shop'),
                         'icon' => 'fa fa-align-left',
                     ],
                     'center' => [
-                        'title' => __('Center', 'wpplc'),
+                        'title' => __('Center', 'wp-plc-shop'),
                         'icon' => 'fa fa-align-center',
                     ],
                     'right' => [
-                        'title' => __('Right', 'wpplc'),
+                        'title' => __('Right', 'wp-plc-shop'),
                         'icon' => 'fa fa-align-right',
                     ],
                 ],
@@ -222,7 +222,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'showcase_title_padding',
             [
-                'label' => __('Padding', 'oneplace'),
+                'label' => __('Padding', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors' => [
@@ -234,7 +234,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_control(
             'showcase_title_color_odd',
             [
-                'label' => __('Text Color Odd', 'elementor'),
+                'label' => __('Text Color Odd', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
@@ -246,7 +246,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_control(
             'showcase_title_color_even',
             [
-                'label' => __('Text Color Even', 'elementor'),
+                'label' => __('Text Color Even', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
@@ -266,7 +266,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'showcase_boxes',
             [
-                'label' => __('Boxen', 'wpplc'),
+                'label' => __('Boxes', 'wp-plc-shop'),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -275,7 +275,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'box_background_odd',
-                'label' => __( 'Background Odd', 'plugin-domain' ),
+                'label' => __( 'Background Odd', 'wp-plc-shop' ),
                 'types' => [ 'classic', 'gradient', 'video' ],
                 'selector' => '{{WRAPPER}} div.box-odd',
             ]
@@ -285,7 +285,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'box_background_even',
-                'label' => __( 'Background Even', 'plugin-domain' ),
+                'label' => __( 'Background Even', 'wp-plc-shop' ),
                 'types' => [ 'classic', 'gradient', 'video' ],
                 'selector' => '{{WRAPPER}} div.box-even',
             ]
@@ -294,7 +294,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'showcase_box_align',
             [
-                'label' => __('Alignment', 'wpplc'),
+                'label' => __('Alignment', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::CHOOSE,
                 'options' => [
                     'left' => [
@@ -318,7 +318,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'showcase_box_padding',
             [
-                'label' => __('Padding', 'oneplace'),
+                'label' => __('Padding', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors' => [
@@ -338,7 +338,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'showcase_description',
             [
-                'label' => __('Beschreibung', 'wpplc'),
+                'label' => __('Description', 'wp-plc-shop'),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -355,7 +355,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_control(
             'showcase_description_color_odd',
             [
-                'label' => __('Text Color Odd', 'elementor'),
+                'label' => __('Text Color Odd', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
@@ -367,7 +367,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_control(
             'showcase_description_color_even',
             [
-                'label' => __('Text Color Even', 'elementor'),
+                'label' => __('Text Color Even', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
@@ -379,7 +379,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'showcase_description_padding',
             [
-                'label' => __('Padding', 'oneplace'),
+                'label' => __('Padding', 'wp-plc-shop'),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors' => [
@@ -413,6 +413,35 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
             ]
         );
 
+        $this->add_responsive_control(
+            'button_text_padding',
+            [
+                'label' => __( 'Padding', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors' => [
+                    '{{WRAPPER}} .plc-slider-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        $this->end_controls_section();
+        /**
+         * Buttons Style - END
+         */
+
+        /**
+         * Buttons Odd Style - START
+         */
+        $this->start_controls_section(
+            'event_buttons_odd_style',
+            [
+                'label' => __( 'Buttons - Odd', 'wp-plc-shop' ),
+                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
         $this->start_controls_tabs( 'tabs_button_style' );
 
         $this->start_controls_tab(
@@ -429,7 +458,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .box-odd .plc-slider-button' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -444,7 +473,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
                     'value' => \Elementor\Scheme_Color::COLOR_4,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .box-odd .plc-slider-button' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -464,7 +493,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
                 'label' => __( 'Text Color', 'wp-plc-shop' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button:hover' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .box-odd .plc-slider-button:hover' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -475,7 +504,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
                 'label' => __( 'Background Color', 'wp-plc-shop' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button:hover' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .box-odd .plc-slider-button:hover' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -489,7 +518,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
                     'border_border!' => '',
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button:hover' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .box-odd .plc-slider-button:hover' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -510,7 +539,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'border',
-                'selector' => '{{WRAPPER}} .plc-slider-button',
+                'selector' => '{{WRAPPER}} .box-odd .plc-slider-button',
                 'separator' => 'before',
             ]
         );
@@ -521,7 +550,7 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .box-odd .plc-slider-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -529,24 +558,147 @@ class WPPLC_Shop_Showcase extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
                 'name' => 'button_box_shadow',
-                'selector' => '{{WRAPPER}} .plc-slider-button',
-            ]
-        );
-        $this->add_responsive_control(
-            'button_text_padding',
-            [
-                'label' => __( 'Padding', 'wp-plc-shop' ),
-                'type' => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', 'em', '%' ],
-                'selectors' => [
-                    '{{WRAPPER}} .plc-slider-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'separator' => 'before',
+                'selector' => '{{WRAPPER}} .box-odd .plc-slider-button',
             ]
         );
         $this->end_controls_section();
         /**
-         * Buttons Style - END
+         * Buttons Odd Style - END
+         */
+
+        /**
+         * Buttons Even Style - START
+         */
+        $this->start_controls_section(
+            'event_buttons_even_style',
+            [
+                'label' => __( 'Buttons - Even', 'wp-plc-shop' ),
+                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->start_controls_tabs( 'tabs_button_even_style' );
+
+        $this->start_controls_tab(
+            'tab_button_even_normal',
+            [
+                'label' => __( 'Normal', 'wp-plc-shop' ),
+            ]
+        );
+
+        $this->add_control(
+            'button_text_even_color',
+            [
+                'label' => __( 'Text Color', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .box-even .plc-slider-button' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_background_even_color',
+            [
+                'label' => __( 'Background Color', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'scheme' => [
+                    'type' => \Elementor\Scheme_Color::get_type(),
+                    'value' => \Elementor\Scheme_Color::COLOR_4,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .box-even .plc-slider-button' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab(
+            'tab_button_even_hover',
+            [
+                'label' => __( 'Hover', 'wp-plc-shop' ),
+            ]
+        );
+
+        $this->add_control(
+            'button_hover_even_color',
+            [
+                'label' => __( 'Text Color', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .box-even .plc-slider-button:hover' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_background_hover_even_color',
+            [
+                'label' => __( 'Background Color', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .box-even .plc-slider-button:hover' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_hover_border_even_color',
+            [
+                'label' => __( 'Border Color', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'condition' => [
+                    'border_border!' => '',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .box-even .plc-slider-button:hover' => 'border-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_hover_even_animation',
+            [
+                'label' => __( 'Hover Animation', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::HOVER_ANIMATION,
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            [
+                'name' => 'border_even',
+                'selector' => '{{WRAPPER}} .box-even .plc-slider-button',
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'border_radius_even',
+            [
+                'label' => __( 'Border Radius', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%' ],
+                'selectors' => [
+                    '{{WRAPPER}} .box-even .plc-slider-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'button_box_shadow_even',
+                'selector' => '{{WRAPPER}} .box-even .plc-slider-button',
+            ]
+        );
+        $this->end_controls_section();
+        /**
+         * Buttons Even Style - END
          */
     }
 }

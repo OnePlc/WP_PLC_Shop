@@ -1,5 +1,5 @@
 <div style="width:100%; display: inline-block;">
-    <div class="plc-shop-featured-product-image" style="background:url(<?=$sHost?><?=$oItem->featured_image?>) no-repeat; background-size:cover;">
+    <div class="plc-shop-featured-product-image" style="background:url('<?=$sHost?><?=$oItem->featured_image?>') no-repeat 100% 0%; background-size:cover;">
 
     </div>
 
@@ -41,7 +41,7 @@
     </div>
 
     <?php if($aSettings['featured_custom_text_active'] == 'yes') { ?>
-        <div style="width:100%; display: inline-block;" class="plc-shop-featured-product-desc-box">
+        <div style="width:100%; display: inline-block;" class="plc-shop-singlebox-customtext">
             <textarea class="plc-shop-featured-product-description" style="border:0; border-radius: 0;" placeholder="Persönliche Widmung (max. 30 Wörter)"></textarea>
         </div>
     <?php } ?>
@@ -52,7 +52,7 @@
         <?php $iWidth = ($aSettings['btn2_active'] == 'yes') ? '50%' : '100%'; ?>
         <div style="width:<?=$iWidth?>; float:left;">
             <!-- Buy Button -->
-            <a href="#<?=$oItem->id?>" class="plc-shop-article-addtobasket plc-slider-button">
+            <a href="#<?=$oItem->id?>" class="plc-shop-article-addtobasket plc-slider-button" style="display: inline-block; width:100%;">
                 <i class="<?=$aSettings['btn1_selected_icon']['value']?>" aria-hidden="true"></i>
                 &nbsp;<?=$aSettings['btn1_text']?>
             </a>
