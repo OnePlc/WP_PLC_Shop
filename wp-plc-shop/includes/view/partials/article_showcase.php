@@ -1,6 +1,9 @@
 <?php
 //$sBuyCls = ($aSettings['slider_slide_show_popup_basket'] == 'yes') ? 'plc-shop-additem-tobasket' : 'plc-shop-additemwithamount-tobasket';
 $sBuyCls = 'plc-shop-additem-tobasket';
+$sCurrency = get_option('plcshop_currency_main');
+$sDecPoint = ($sCurrency == '€') ? ',' : '.';
+$sThsndSep = ($sCurrency == '€') ? '.' : '\'';
 
 foreach($aArticles as $oArt) {
     $sClass = (++$iCount%2?"odd":"even");
@@ -17,8 +20,12 @@ foreach($aArticles as $oArt) {
             <h2 class="plc-art-showcase-big-title box-<?=$sClass?>"><?=$oArt->label?></h2>
             <?php if(isset($oArt->variants)) { ?>
                 <select style="border:1px solid #333; border-radius: 0;" class="plc-art-price">
-                    <?php foreach($oArt->variants as $oVar) { ?>
-                        <option value="<?=$oVar->id?>"><?=$oVar->label?> <?=number_format($oVar->price_sell,2,',','.')?> €</option>
+                    <?php foreach($oArt->variants as $oVar) {
+                        $sVarLabel = $oVar->label.' - '.$sCurrency.' '.number_format($oVar->price,2,$sDecPoint,$sThsndSep);
+                        if(get_option('plcshop_currency_pos') == 'after') {
+                            $sVarLabel = $oVar->label.' - '.number_format($oVar->price,2,$sDecPoint,$sThsndSep).' '.$sCurrency;
+                        }?>
+                        <option value="<?=$oVar->id?>"><?=$sVarLabel?></option>
                     <?php } ?>
                 </select>
             <?php } else { ?>

@@ -6,7 +6,8 @@ if(isset($oAPIResponse->items)) {
     }
 }
 $sBasketSlug = get_option('plcshop_basket_slug');
-echo session_id();
+?>
+<?php
 if (count($aItems) > 0) { ?>
     <table class="plc-shop-form plc-shop-basket-table">
         <thead>
@@ -14,11 +15,11 @@ if (count($aItems) > 0) { ?>
             <?php if($sMode == 'default') { ?>
                 <th>&nbsp;</th>
             <?php } ?>
-            <th style="width:120px">Bild</th>
-            <th>Artikel</th>
-            <th>Preis</th>
-            <th>Anz.</th>
-            <th>Total</th>
+            <th style="width:120px"><?=__('Bild', 'wp-plc-shop')?></th>
+            <th style="width:50%;"><?=__('Artikel', 'wp-plc-shop')?></th>
+            <th style="text-align:right;"></th>
+            <th style="text-align:right;"><?=__('Anz.', 'wp-plc-shop')?></th>
+            <th style="text-align:right;"><?=__('Total', 'wp-plc-shop')?></th>
         </tr>
         </thead>
         <tbody>
@@ -26,51 +27,62 @@ if (count($aItems) > 0) { ?>
         $dBasketTotal = 0;
         $dDeliveryFee = 2.5;
         foreach ($aItems as $oItem) {
-            $dPrice = $oItem->price; ?>
+            $dPrice = $oItem->price;
+            switch ($oItem->article_type) {
+                case 'event':
+                    $sImgPath = $oItem->oEvent->featured_image;
+                    $dPrice = $oItem->oVariant->price;
+                    $sPositionLabel = $oItem->oEvent->label.' am '.date('d.m.Y',strtotime($oItem->oEvent->date_start));
+                    $sPositionLabel .= '<br/><small>Event Tickets: '.$oItem->oVariant->label.'</small>';
+                    break;
+                case 'variant':
+                    $sImgPath = $oItem->oArticle->featured_image;
+                    $dPrice = $oItem->oVariant->price;
+                    $sPositionLabel = $oItem->oArticle->label . ': ' . $oItem->oVariant->label;
+                    break;
+                case 'article':
+                case 'custom':
+                    $sImgPath = $oItem->oArticle->featured_image;
+                    $sPositionLabel = $oItem->oArticle->label;
+                    break;
+                default:
+                    break;
+            }?>
             <tr data-pos-id="<?=$oItem->id?>">
                 <?php if($sMode == 'default') { ?>
                     <td data-title="Entfernen:">
-                        <i class="fas fa-times plc-shop-basket-pos-del"></i>
+                        <a href="#" class="plc-shop-basket-pos-del">
+                            <i class="fas fa-times"></i>
+                        </a>
                     </td>
                 <?php } ?>
                 <td data-title="">
                     <div class="plc-shop-basket-pos-img"
-                         style="background:url(<?= $sHost ?>/data/article/<?= $oItem->article_idfs ?>/avatar.png) no-repeat 100% 50%; background-size:cover;">
+                         style="background:url('<?= $sHost ?><?= $sImgPath ?>') no-repeat 100% 100%; background-size:cover;">
                         &nbsp;
                     </div>
                 </td>
                 <td data-title="Artikel:">
                     <?php
-                    switch ($oItem->article_type) {
-                        case 'event':
-                            echo $oItem->oEvent->label.' am '.date('d.m.Y',strtotime($oItem->oEvent->date_start));
-                            echo '<br/><small>'.$oItem->oArticle->label.'</small>';
-                            break;
-                        case 'variant':
-                            $dPrice = $oItem->oVariant->price;
-                            echo $oItem->oArticle->label . ': ' . $oItem->oVariant->label;
-                            break;
-                        case 'article':
-                        case 'custom':
-                            echo $oItem->oArticle->label;
-                            break;
-                        default:
-                            break;
-                    }
+                    echo $sPositionLabel;
                     ?>
                     <?php if($oItem->comment != '') { ?>
                         <br/><small>Geschenkgutschein - Widmung: <?=$oItem->comment?></small>
                     <?php } ?>
                 </td>
-                <td data-title="Preis:"><?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dPrice, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?></td>
-                <td data-title="Anzahl:">
+                <td data-title="Preis:" style="text-align:right;">
+                    <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?>
+                    <?= number_format($dPrice, 2, ',', '.') ?>
+                    <?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
+                </td>
+                <td data-title="Anzahl:" style="text-align:right;">
                     <?php if($sMode == 'readonly') { ?>
                         <?= $oItem->amount ?>
                     <?php } else { ?>
                         <input type="number" value="<?= $oItem->amount ?>" class="plc-shop-input plc-shop-basket-pos-amount" size="4" min="0" step="1" style="padding:8px; width:80px;" />
                     <?php } ?>
                 </td>
-                <td data-title="Total:"><?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dPrice * $oItem->amount, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?></td>
+                <td data-title="Total:" style="text-align:right;"><?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dPrice * $oItem->amount, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?></td>
             </tr>
             <?php
             $dBasketTotal += ($dPrice * $oItem->amount);
@@ -90,7 +102,7 @@ if (count($aItems) > 0) { ?>
                 <tbody>
                 <tr>
                     <th>Zwischensumme</th>
-                    <td data-title="Zwischensumme">
+                    <td style="min-width:160px;" data-title="Zwischensumme">
                         <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dBasketTotal, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
                     </td>
                 </tr>
@@ -124,7 +136,22 @@ if (count($aItems) > 0) { ?>
         </div>
     </div>
 <?php } else { ?>
-    <div>
-        Warenkorb leer
+    <div class="elementor-widget-container">
+        <div class="elementor-alert elementor-alert-info" role="alert">
+            <span class="elementor-alert-title"><b>Warenkorb leer</b></span>
+            <span class="elementor-alert-description">Es befindet sich aktuell noch nichts im Warenkorb.</b></span>
+        </div>
     </div>
-<?php }?>
+<?php } ?>
+<?php if(is_user_logged_in() && get_option( 'plcshop_elementor_basket_debugmode') == 1) { ?>
+    <div class="elementor-widget-container">
+        <div class="elementor-alert elementor-alert-info" role="alert">
+            <span class="elementor-alert-title">Debug Info für Wordpress Admins</span>
+            <span class="elementor-alert-description">Wordpress Shop Session ID: <b><?=session_id();?></b></span>
+            <button type="button" class="elementor-alert-dismiss">
+                <span aria-hidden="true">×</span>
+                <span class="elementor-screen-only">Warnung verwerfen</span>
+            </button>
+        </div>
+    </div>
+<?php } ?>

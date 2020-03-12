@@ -2,7 +2,6 @@ jQuery(function() {
     jQuery('.plc-shop-swiper-container').each(function () {
         var iSliderPerView = jQuery(this).attr('data-slides-per-view');
         var sSliderID = jQuery(this).attr('id');
-        console.log('init slider '+sSliderID+' with' +iSliderPerView+' slids per view');
         var mySwiper = new Swiper(jQuery(this), {
             speed: 400,
             spaceBetween: 8,

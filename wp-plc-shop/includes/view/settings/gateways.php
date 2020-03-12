@@ -51,6 +51,18 @@
 
     <h3>Prepay</h3>
 
+    <!-- Bank Account Data -->
+    <div class="plc-admin-settings-field">
+        <?php $sCurVal = get_option('plcshop_gateway_prepay_bankacc'); ?>
+        <?php
+        wp_editor(html_entity_decode($sCurVal),"plcshop_gateway_prepay_bankacc", [
+            'textarea_rows'=>12, 'editor_class'=>'plc-settings-value','media_buttons' => false
+        ]);
+        ?>
+        <span>Bank Account Data</span>
+    </div>
+    <!-- Bank Account Data -->
+
     <!-- Save Button -->
     <hr/>
     <button class="plc-admin-settings-save plc-admin-btn plc-admin-btn-primary" plc-admin-page="page-gateways">Save Payment Gateway Settings</button>

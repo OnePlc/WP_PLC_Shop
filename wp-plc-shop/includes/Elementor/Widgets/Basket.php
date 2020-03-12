@@ -54,10 +54,15 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
         }
 
         // get onePlace Server URL
-        $sHost = get_option('plcconnect_server_url');
+        $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
         $bPaymentCancelled = false;
 
-        require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket_breadcrumb.php';
+        require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket_breadcrumb.php';
+
+        if(get_option('plcshop_basket_maintenancemode') == 1 && !is_user_logged_in()) {
+            require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket_maintenance.php';
+            exit();
+        }
 
         switch($sStep) {
             case 'confirm':
@@ -67,13 +72,22 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
                 $bPaymentCancelled = false;
                 $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/confirm', ['shop_session_id'=>session_id()],$aAPIData);
                 $oInfo = $oAPIResponse;
-                require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/confirm.php';
+                require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/confirm.php';
+                break;
+            case 'cancel':
+                $aAPIData = [
+                    'paymentmethod' => $_REQUEST['shop_paymentmethod'],
+                ];
+                $bPaymentCancelled = true;
+                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/confirm', ['shop_session_id'=>session_id()],$aAPIData);
+                $oInfo = $oAPIResponse;
+                require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/confirm.php';
                 break;
             case 'payment':
                 $aAddressData = [];
                 if(isset( $_REQUEST['address_firstname'])) {
                     $aAddressData = [
-                        'salutation' => $_REQUEST['address_salution'],
+                        'salutation' => $_REQUEST['address_salutation'],
                         'firstname' => $_REQUEST['address_firstname'],
                         'lastname' => $_REQUEST['address_lastname'],
                         'email' => $_REQUEST['address_email'],
@@ -87,8 +101,7 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
                 }
                 $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/payment', ['shop_session_id'=>session_id()],$aAddressData);
                 if($oAPIResponse->state == 'success') {
-                    $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
-                    require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment.php';
+                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment.php';
                 } else {
                     var_dump($oAPIResponse);
                     echo 'ERROR CONNECTING TO SHOP SERVER - PLEASE TRY AGAIN';
@@ -96,54 +109,64 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
                 break;
             case 'address':
                 $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/checkout', ['shop_session_id'=>session_id()]);
-                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
                 $oContact = (isset($oAPIResponse->contact)) ? $oAPIResponse->contact : false;
-                require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/address.php';
+                require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/address.php';
+                break;
+            case 'paymentsuccess':
+                // check if it is a stripe payment
+                if(isset($_REQUEST['session_id'])) {
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/stripe', [
+                        'shop_session_id'=>session_id(),
+                        'session_id' => $_REQUEST['session_id'],
+                        'payment_state' => 'done',
+                    ]);
+
+                    if($oAPIResponse->state == 'success') {
+                        require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment_received.php';
+                    } else {
+                        require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment_failed.php';
+                    }
+                }
+                break;
+            case 'pay':
+                if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/initpayment', ['shop_session_id'=>session_id()]);
+                    if($oAPIResponse->state == 'success') {
+                        if(isset($oAPIResponse->paymentmethod->gateway)) {
+                            switch($oAPIResponse->paymentmethod->gateway) {
+                                case 'prepay':
+                                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/prepay.php';
+                                    break;
+                                case 'stripe':
+                                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/stripe.php';
+                                    break;
+                                default:
+                                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/invalid_gateway.php';
+                                    break;
+                            }
+                        }
+                        //require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/payment.php';
+                    } else {
+                        var_dump($oAPIResponse);
+                        echo 'ERROR CONTACTING SHOP PAYMENT SERVICE';
+                    }
+                } else {
+                    echo 'TRY AGAIN';
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/confirm', ['shop_session_id'=>session_id()]);
+                    $oInfo = $oAPIResponse;
+                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/checkout/confirm.php';
+                    break;
+                }
                 break;
             default:
                 # Get Articles from onePlace API
                 $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
-                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
                 $sMode = 'default';
                 $oBasket = $oAPIResponse->oBasket;
 
-                require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
-                //require_once WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket_load.php';
+                require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket_load.php';
                 break;
         }
-/**
-        switch($sStep) {
-            case 'thankyou':
-                include __DIR__.'/view/checkout_done.php';
-                break;
-            case 'cancel':
-                $bPaymentCancelled = true;
-                include __DIR__.'/view/checkout_confirm.php';
-                break;
-            case 'pay':
-                include __DIR__.'/view/checkout_pay.php';
-                break;
-            case 'confirm':
-                include __DIR__.'/view/checkout_confirm.php';
-                break;
-            case 'payment':
-                include __DIR__.'/view/checkout_payment.php';
-                break;
-            case 'address':
-                include __DIR__.'/view/checkout_address.php';
-                break;
-            default: ?>
-                <div class="plc-shop-basket">
-                    <img src="<?=WPPLC_SHOP_PUB_DIR?>/assets/img/ajax-loader.gif" />
-                </div>
-                <script>
-                    jQuery.post('<?=WPPLC_SHOP_PUB_DIR?>/includes/elementor/widgets/view/basket.php',{},function(retHTML) {
-                        jQuery('.plc-shop-basket').html(retHTML);
-                    })
-                </script>
-            <?php
-                break;
-        } **/
     }
 
     protected function _content_template() {
@@ -576,6 +599,58 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
 
         // End Section
         $this->end_controls_section();
+
+        /**
+         * "Prepay Info Text" Settings - START
+         */
+        $this->start_controls_section(
+            'section_payment_prepay_infotext_settings',
+            [
+                'label' => __('Basket - Payment "Prepay"', 'wp-plc-shop'),
+            ]
+        );
+
+        $this->add_control(
+            'payment_prepay_infotext',
+            [
+                'label' => __( 'Text', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::WYSIWYG,
+                'default' => __( 'Default description', 'wp-plc-shop' ),
+                'placeholder' => __( 'Type your description here', 'wp-plc-shop' ),
+            ]
+        );
+
+        // End Section
+        $this->end_controls_section();
+        /**
+         * "Prepay Info Text" Settings - END
+         */
+
+        /**
+         * "Stripe Info Text" Settings - START
+         */
+        $this->start_controls_section(
+            'section_payment_stripe_infotext_settings',
+            [
+                'label' => __('Basket - Payment "Stripe"', 'wp-plc-shop'),
+            ]
+        );
+
+        $this->add_control(
+            'payment_stripe_infotext',
+            [
+                'label' => __( 'Text', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::WYSIWYG,
+                'default' => __( 'Default description', 'wp-plc-shop' ),
+                'placeholder' => __( 'Type your description here', 'wp-plc-shop' ),
+            ]
+        );
+
+        // End Section
+        $this->end_controls_section();
+        /**
+         * "Stripe Info Text" Settings - END
+         */
 
         /**
          * Buttons Style

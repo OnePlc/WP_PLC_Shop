@@ -1,8 +1,11 @@
 <form method="POST" action="/<?=$sBasketSlug?>/payment" class="plc-shop-form">
     <?php if(isset($oAPIResponse->deliverymethods)) { ?>
     <div style="width:100%; display: inline-block; padding:8px;">
-        <?php $iDelivery = (!empty($oAPIResponse->basket->deliverymethod_idfs)) ? $oAPIResponse->basket->deliverymethod_idfs : 1; ?>
-        Wie möchten Sie Ihre Gutscheine / Tickets erhalten ?<br/>
+        <?php
+        # Select First delivery method as default, or load selected if step is run again
+        $iDelivery = (!empty($oAPIResponse->basket->deliverymethod_idfs))
+            ? $oAPIResponse->basket->deliverymethod_idfs : $oAPIResponse->deliverymethods[0]->id; ?>
+        <?=__('Wie möchten Sie Ihre Gutscheine / Tickets erhalten ?','wp-plc-shop')?><br/>
         <?php foreach($oAPIResponse->deliverymethods as $oDelMethod) { ?>
         <input type="radio" name="address_deliverymethod" value="<?=$oDelMethod->id?>"<?=($iDelivery == $oDelMethod->id) ? ' checked ' : ''?>/> <?=$oDelMethod->label?>
         <?php } ?>
@@ -14,9 +17,17 @@
                 <label for="address_salution">
                     Anrede*
                 </label>
-                <select name="address_salution" class="plc-shop-input">
-                    <option value="1">Herr</option>
-                    <option value="2">Frau</option>
+                <select name="address_salutation" class="plc-shop-input">
+                    <?php
+                    # Select First delivery method as default, or load selected if step is run again
+                    $iSalutation = (isset($oAPIResponse->contact))
+                        ? $oAPIResponse->contact->salutation_idfs : $oAPIResponse->salutations[0]->id; ?>
+                    <?=__('Wie möchten Sie Ihre Gutscheine / Tickets erhalten ?','wp-plc-shop')?><br/>
+                    <?php foreach($oAPIResponse->salutations as $oSalut) { ?>
+                        <option value="<?=$oSalut->id?>"<?=($iSalutation == $oSalut->id) ? ' selected ' : ''?>>
+                            <?=$oSalut->label?>
+                        </option>
+                    <?php } ?>
                 </select>
             </div>
         </div>

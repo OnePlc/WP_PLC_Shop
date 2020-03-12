@@ -15,7 +15,7 @@ namespace OnePlace\Shop;
  * Load composer autoload files
  *
  */
-//require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // Load Plugin
 require_once __DIR__.'/Plugin.php';

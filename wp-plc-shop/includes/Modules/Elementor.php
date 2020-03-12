@@ -52,6 +52,7 @@ final class Elementor {
             wp_enqueue_script('shop-article-slider', plugins_url('assets/js/article-slider.js', WPPLC_SHOP_PLUGIN_MAIN_FILE), ['jquery']);
             //wp_enqueue_style( 'shop-article-slider-style', '/wp-content/plugins/wp-plc-shop/assets/css/article-slider.css');
         }
+        // ##SWAL2BTNBG##
         wp_enqueue_style( 'shop-base-style', plugins_url('assets/css/shop-base-style.css', WPPLC_SHOP_PLUGIN_MAIN_FILE));
     }
 

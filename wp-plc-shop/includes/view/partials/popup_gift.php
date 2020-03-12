@@ -24,10 +24,7 @@ $sThsndSep = ($sCurrency == '€') ? '.' : '\'';
     </div>
     <div style="width:100%; display: inline-block; text-align:center;">
         <div style="margin:auto; display: inline-block;">
-            <div style="width:20%; float:left; padding:2px; min-width:60px;">
-                Anz
-            </div>
-            <div style="width:80%; float:left; padding:2px;">
+            <div style="width:100%; float:left; padding:2px;">
                 <?php
                 switch($sItemType) {
                     case 'article':
@@ -45,10 +42,7 @@ $sThsndSep = ($sCurrency == '€') ? '.' : '\'';
                 }
                 ?>
             </div>
-            <div style="width:20%; float:left; padding:2px; display: inline-block; min-width:60px;">
-                <input id="plc-shop-popup-basket-amount" type="number" style="margin-bottom:8px; padding:12px; width:100%;" value="1" max="10" min="1" step="1">
-            </div>
-            <div style="width:80%; float:left; padding:2px; display: inline-block;">
+            <div style="width:100%; float:left; padding:2px; display: inline-block;">
                 <?php
                 /**
                  * Article Variants Plugin - START
@@ -68,17 +62,17 @@ $sThsndSep = ($sCurrency == '€') ? '.' : '\'';
                         </select>
                     <?php } ?>
                 <?php } elseif (isset($oItem->tickets)) { ?>
-                <select class="plc-slider-slide-price" id="plc-shop-popup-basket-article" plc-article-type="variant">
-                    <?php foreach ($oItem->tickets as $oVar) {
-                        $sVarLabel = $oVar->label.' - '.$sCurrency.' '.number_format($oVar->price,2,$sDecPoint,$sThsndSep);
-                        if(get_option('plcshop_currency_pos') == 'after') {
-                            $sVarLabel = $oVar->label.' - '.number_format($oVar->ticket_price,2,$sDecPoint,$sThsndSep).' '.$sCurrency;
-                        }?>
-                        <option value="<?= $oVar->id ?>">
-                            <?= $sVarLabel ?>
-                        </option>
-                    <?php } ?>
-                </select>
+                    <select class="plc-slider-slide-price" id="plc-shop-popup-basket-article" plc-article-type="variant">
+                        <?php foreach ($oItem->tickets as $oVar) {
+                            $sVarLabel = $oVar->label.' - '.$sCurrency.' '.number_format($oVar->price,2,$sDecPoint,$sThsndSep);
+                            if(get_option('plcshop_currency_pos') == 'after') {
+                                $sVarLabel = $oVar->label.' - '.number_format($oVar->ticket_price,2,$sDecPoint,$sThsndSep).' '.$sCurrency;
+                            }?>
+                            <option value="<?= $oVar->id ?>">
+                                <?= $sVarLabel ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                 <?php } elseif(isset($oItem->price_sell)) { ?>
                     <select class="plc-slider-slide-price" id="plc-shop-popup-basket-article" plc-article-type="article">
                         <option value="<?= $oItem->id ?>">
@@ -91,6 +85,10 @@ $sThsndSep = ($sCurrency == '€') ? '.' : '\'';
                  * Article Variants Plugin - END
                  */
                 ?>
+            </div>
+            <div style="width:100%; float:left; padding:2px;">
+                <h4>Persönliche Widmung</h4>
+                <textarea class="plc-shop-input plc-shop-popup-textarea" rows="3" placeholder="Persönliche Widmung - Maximal 30 Wörter" id="plc-article-gift-text"></textarea>
             </div>
         </div>
     </div>

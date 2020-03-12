@@ -2,6 +2,28 @@
     <h1><?=__('Basket Settings','wp-plc-shop')?></h1>
     <p>Here you find all the settings related to shop basket</p>
 
+    <!-- Basket Debug Mode -->
+    <div class="plc-admin-settings-field">
+        <label class="plc-settings-switch">
+            <?php $bDebugActive = get_option( 'plcshop_elementor_basket_debugmode', false ); ?>
+            <input name="plcshop_elementor_basket_debugmode" type="checkbox" <?=($bDebugActive == 1)?'checked':''?> class="plc-settings-value" />
+            <span class="plc-settings-slider"></span>
+        </label>
+        <span><?=__('Basket Debug Mode','wp-plc-shop')?></span>
+    </div>
+    <!-- Basket Debug Mode -->
+
+    <!-- Basket Maintenance Mode -->
+    <div class="plc-admin-settings-field">
+        <label class="plc-settings-switch">
+            <?php $bDebugActive = get_option( 'plcshop_basket_maintenancemode', false ); ?>
+            <input name="plcshop_basket_maintenancemode" type="checkbox" <?=($bDebugActive == 1)?'checked':''?> class="plc-settings-value" />
+            <span class="plc-settings-slider"></span>
+        </label>
+        <span><?=__('Maintenance Mode','wp-plc-shop')?></span>
+    </div>
+    <!-- Basket Maintenance Mode -->
+
     <h3>Basket Slug</h3>
     <!-- Basket Slug -->
     <div class="plc-admin-settings-field">

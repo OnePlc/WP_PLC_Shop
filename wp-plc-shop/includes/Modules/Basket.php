@@ -34,9 +34,21 @@ final class Basket {
         add_action( 'wp_enqueue_scripts', [$this,'enqueueScripts'] );
 
         # Register AJAX Hooks
-        //add_action('wp_ajax_plc_showbasket', [ $this, 'showBasket' ] );
+        add_action('wp_ajax_nopriv_plc_showbasket', [ $this, 'showBasket' ] );
+        add_action('wp_ajax_plc_showbasket', [ $this, 'showBasket' ] );
+        add_action('wp_ajax_nopriv_plc_addtobasket', [ $this, 'showBasket' ] );
         add_action('wp_ajax_plc_addtobasket', [ $this, 'addToBasket' ] );
+
+        add_action('wp_ajax_nopriv_plc_popupbasket', [ $this, 'showPopupBasket' ] );
         add_action('wp_ajax_plc_popupbasket', [ $this, 'showPopupBasket' ] );
+
+        add_action('wp_ajax_nopriv_plc_popupgift', [ $this, 'showPopupGift' ] );
+        add_action('wp_ajax_plc_popupgift', [ $this, 'showPopupGift' ] );
+
+        add_action('wp_ajax_nopriv_plc_basketupdatepos', [ $this, 'updateBasketPosition' ] );
+        add_action('wp_ajax_plc_basketupdatepos', [ $this, 'updateBasketPosition' ] );
+
+
 
         // add shop custom rewrites
         add_action('init', [$this,'registerRewriteRules'], 10, 0);
@@ -46,6 +58,61 @@ final class Basket {
             // add cart icon to main menu
             add_filter( 'wp_nav_menu_items', [$this,'shopMenuIcon'], 10, 2 );
         }
+    }
+
+    /**
+     * Remove Basket Position
+     *
+     * @since 1.0.0
+     */
+    public function updateBasketPosition() {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if(array_key_exists('position_id',$_REQUEST)) {
+                $iPosID = (int)$_REQUEST['position_id'];
+                $sPosAction = $_REQUEST['position_mode'];
+                $aSettings = [
+                    'btn_checkout_text' => 'Zur Kasse',
+                    'btn_checkout_selected_icon' => ['value' => 'fas fa-cash-register'],
+                ];
+                switch($sPosAction) {
+                    case 'remove':
+                        $aParams = ['position_id' => $iPosID, 'shop_session_id' => session_id()];
+                        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/remove', $aParams);
+                        $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+                        $sMode = 'default';
+                        if($oAPIResponse->state == 'success') {
+                            $oBasket = $oAPIResponse->basket;
+                            require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
+                        } else {
+                            echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
+                        }
+                        break;
+                    case 'update':
+                        $aParams = [
+                            'position_id' => $iPosID,
+                            'shop_session_id' => session_id(),
+                            'position_amount' => (int)$_REQUEST['position_amount']];
+                        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/update', $aParams);
+                        $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+                        $sMode = 'default';
+                        if($oAPIResponse->state == 'success') {
+                            $oBasket = $oAPIResponse->basket;
+                            require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
+                        } else {
+                            echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
+                        }
+                        break;
+                    default:
+                        echo 'INVALID ACTION';
+                        break;
+                }
+            } else {
+                echo 'NO POSITION ID FOUND';
+            }
+        } else {
+            echo 'NOT ALLOWED';
+        }
+        exit();
     }
 
     /**
@@ -67,6 +134,28 @@ final class Basket {
     }
 
     /**
+     * Show Basket (AJAX)
+     */
+    public function showBasket()
+    {
+        //if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
+            $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+            $sMode = 'default';
+            if($oAPIResponse->state == 'success') {
+                $oBasket = $oAPIResponse->oBasket;
+                $aSettings = [
+                    'btn_checkout_text' => 'Zur Kasse',
+                    'btn_checkout_selected_icon' => ['value' => 'fas fa-cash-register'],
+                ];
+                require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
+            } else {
+                echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
+            }
+        //}
+        exit();
+    }
+    /**
      * Popup to Add Item to Basket (AJAX)
      *
      * @since 1.0.0
@@ -77,11 +166,86 @@ final class Basket {
             $sItemType = $_REQUEST['shop_item_type'];
 
             # Get Articles from onePlace API
-            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/get/'.$iItemID, ['listmode'=>'entity']);
+            $oAPIResponse = (object)['state' => 'error'];
+            switch($sItemType) {
+                case 'article':
+                case 'variant':
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/get/'.$iItemID, ['listmode'=>'entity']);
+                    break;
+                case 'event':
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/event/api/get/'.$iItemID, ['listmode'=>'entity']);
+                    break;
+                default:
+                    break;
+            }
+
+            // Set Language for all Date functions
+            $sLang = 'en_US';
+            if (defined('ICL_LANGUAGE_CODE')) {
+                if (ICL_LANGUAGE_CODE == 'en') {
+                    $sLang = 'en_US';
+                }
+                if (ICL_LANGUAGE_CODE == 'de') {
+                    $sLang = 'de_DE';
+                }
+                $aParams['lang'] = $sLang;
+            }
+            setlocale(LC_TIME, $sLang);
+
 
             if ($oAPIResponse->state == 'success') {
                 $oItem = $oAPIResponse->oItem;
-                require_once __DIR__.'/../view/partials/popup_basket.php';
+                require __DIR__.'/../view/partials/popup_basket.php';
+            } else {
+                echo 'ERROR CONNECTING TO SHOP SERVER';
+            }
+
+
+        }
+        exit();
+    }
+
+    /**
+     * Popup to Add Gift to Basket (AJAX)
+     *
+     * @since 1.0.0
+     */
+    public function showPopupGift() {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $iItemID = $_REQUEST['shop_item_id'];
+            $sItemType = $_REQUEST['shop_item_type'];
+
+            # Get Articles from onePlace API
+            # Get Articles from onePlace API
+            $oAPIResponse = (object)['state' => 'error'];
+            switch($sItemType) {
+                case 'article':
+                case 'variant':
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/get/'.$iItemID, ['listmode'=>'entity']);
+                    break;
+                case 'event':
+                    $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/event/api/get/'.$iItemID, ['listmode'=>'entity']);
+                    break;
+                default:
+                    break;
+            }
+
+            // Set Language for all Date functions
+            $sLang = 'en_US';
+            if (defined('ICL_LANGUAGE_CODE')) {
+                if (ICL_LANGUAGE_CODE == 'en') {
+                    $sLang = 'en_US';
+                }
+                if (ICL_LANGUAGE_CODE == 'de') {
+                    $sLang = 'de_DE';
+                }
+                $aParams['lang'] = $sLang;
+            }
+            setlocale(LC_TIME, $sLang);
+
+            if ($oAPIResponse->state == 'success') {
+                $oItem = $oAPIResponse->oItem;
+                require __DIR__.'/../view/partials/popup_gift.php';
             } else {
                 echo 'ERROR CONNECTING TO SHOP SERVER';
             }
@@ -106,6 +270,10 @@ final class Basket {
             $iItemID = $_REQUEST['shop_item_id'];
             $sItemType = $_REQUEST['shop_item_type'];
             $fItemAmount = $_REQUEST['shop_item_amount'];
+            $fCustomPrice = $_REQUEST['shop_item_customprice'];
+            $sItemComment = $_REQUEST['shop_item_comment'];
+            $iRefID = (isset($_REQUEST['shop_item_ref_idfs'])) ? (int)$_REQUEST['shop_item_ref_idfs'] : 0;
+            $sRefType = isset($_REQUEST['shop_item_ref_type']) ? $_REQUEST['shop_item_ref_type'] : 'none';
 
             # Get Articles from onePlace API
             $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/add', [
@@ -113,6 +281,10 @@ final class Basket {
                 'shop_item_id' => (int)$iItemID,
                 'shop_item_type' => $sItemType,
                 'shop_item_amount' => (float)$fItemAmount,
+                'shop_item_comment' => $sItemComment,
+                'shop_item_customprice' => $fCustomPrice,
+                'shop_item_ref_idfs' => $iRefID,
+                'shop_item_ref_type' => $sRefType,
             ]);
 
             if ($oAPIResponse->state == 'success') {
@@ -175,6 +347,8 @@ final class Basket {
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'pluginUrl' => plugins_url('',WPPLC_SHOP_PLUGIN_MAIN_FILE),
             'shopBasketSlug' => get_option('plcshop_basket_slug'),
+            'popupButtonBackground' => get_option('plcshop_popup_buybutton_background'),
+            'shopCurrency' => get_option('plcshop_currency_main')
         ] );
         wp_enqueue_script( 'sweet-alert', 'https://cdn.jsdelivr.net/npm/sweetalert2@9', [ 'jquery' ] );
         wp_enqueue_script( 'jquery-mask', 'https://cdn.jsdelivr.net/npm/jquery-mask-plugin@1.14.8/dist/jquery.mask.min.js', [ 'jquery' ] );
