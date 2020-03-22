@@ -11,6 +11,12 @@
                     if($oPayM->gateway == 'paypal') {
                         continue;
                     }
+
+                    if($oPayM->gateway == 'instore') {
+                        if($oAPIResponse->deliverymethod->gateway != 'pickup') {
+                            continue;
+                        }
+                    }
                     ?>
                     <li>
                         <?php $sChecked = ($iPaymentSelected == $oPayM->id) ? ' checked="checked"' : ''; ?>

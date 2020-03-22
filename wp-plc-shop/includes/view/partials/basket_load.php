@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
         return false;
     });
 
-    $(document).on('change', '.plc-shop-basket-pos-amount', function() {
+    $(document).on('blur', '.plc-shop-basket-pos-amount', function() {
         var iPosID = $(this).parent('td').parent('tr').attr('data-pos-id');
         var iNewAmount = $(this).val();
         if(iNewAmount > 0) {

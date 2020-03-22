@@ -53,6 +53,9 @@ function addItemToBasket(fAmount,iItemID,sItemType,sItemComment,iCustomPrice,iRe
         shop_item_ref_idfs:iRefID,
         shop_item_ref_type:sRefType
     }, function (retHTML) {
+        var iCurCount = parseInt(jQuery('.plc-shop-badge-counter').html());
+        iCurCount = iCurCount+parseInt(fAmount);
+        jQuery('.plc-shop-badge-counter').html(iCurCount);
         if(fAmount == 1) {
             WPPLC_Shop_printMessage(sItemDescNameSingle+' "'+sItemLabel+'" wurde in den Warenkorb gelegt','success',5,true)
         } else {
@@ -93,6 +96,10 @@ jQuery(function() {
 
     jQuery('.plc-shop-additem-tobasket').on('click',function() {
         var iItemID = jQuery(this).attr('href').substring('#'.length);
+        var iVariantID = jQuery(this).attr('plc-item-variant');
+        if(iVariantID == undefined) {
+            iVariantID = 0;
+        }
         var sItemType = jQuery(this).attr('plc-item-type');
         var sButtonLabel = 'Kaufen';
         if(sItemType == 'event') {
@@ -102,6 +109,7 @@ jQuery(function() {
         jQuery.post(basketAjax.ajaxurl, {
             action: 'plc_popupbasket',
             shop_item_id: iItemID,
+            shop_item_variant_id: iVariantID,
             shop_item_type: sItemType
         }, function (retHTML) {
             Swal.fire({
@@ -125,11 +133,11 @@ jQuery(function() {
                 if(jQuery('#plc-shop-popup-basket-ref-idfs')) {
                     iRefID = jQuery('#plc-shop-popup-basket-ref-idfs').val();
                     sRefType = jQuery('#plc-shop-popup-basket-ref-type').val();
-                    if(jQuery('#plc-shop-popup-basket-ref-label')) {
-                        var refLabel = jQuery('#plc-shop-popup-basket-ref-label').val();
-                        if(refLabel != undefined && refLabel != '') {
-                            sItemLabel = refLabel + ': ' +sItemLabel;
-                        }
+                }
+                if(jQuery('#plc-shop-popup-basket-ref-label')) {
+                    var refLabel = jQuery('#plc-shop-popup-basket-ref-label').val();
+                    if(refLabel != undefined && refLabel != '') {
+                        sItemLabel = refLabel + ': ' +sItemLabel;
                     }
                 }
                 if (result.value) {

@@ -137,6 +137,9 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
                                 case 'prepay':
                                     require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/prepay.php';
                                     break;
+                                case 'instore':
+                                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/instore.php';
+                                    break;
                                 case 'stripe':
                                     require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/stripe.php';
                                     break;
@@ -160,9 +163,9 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
                 break;
             default:
                 # Get Articles from onePlace API
-                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
-                $sMode = 'default';
-                $oBasket = $oAPIResponse->oBasket;
+                //$oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
+                //$sMode = 'default';
+                //$oBasket = $oAPIResponse->oBasket;
 
                 require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket_load.php';
                 break;
@@ -624,6 +627,32 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
         $this->end_controls_section();
         /**
          * "Prepay Info Text" Settings - END
+         */
+
+        /**
+         * "Instore Info Text" Settings - START
+         */
+        $this->start_controls_section(
+            'section_payment_instore_infotext_settings',
+            [
+                'label' => __('Basket - Payment "In Store"', 'wp-plc-shop'),
+            ]
+        );
+
+        $this->add_control(
+            'payment_instore_infotext',
+            [
+                'label' => __( 'Text', 'wp-plc-shop' ),
+                'type' => \Elementor\Controls_Manager::WYSIWYG,
+                'default' => __( 'Default description', 'wp-plc-shop' ),
+                'placeholder' => __( 'Type your description here', 'wp-plc-shop' ),
+            ]
+        );
+
+        // End Section
+        $this->end_controls_section();
+        /**
+         * "Instore Info Text" Settings - END
          */
 
         /**

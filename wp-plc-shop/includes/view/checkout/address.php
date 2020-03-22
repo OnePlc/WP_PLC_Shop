@@ -5,9 +5,10 @@
         # Select First delivery method as default, or load selected if step is run again
         $iDelivery = (!empty($oAPIResponse->basket->deliverymethod_idfs))
             ? $oAPIResponse->basket->deliverymethod_idfs : $oAPIResponse->deliverymethods[0]->id; ?>
-        <?=__('Wie möchten Sie Ihre Gutscheine / Tickets erhalten ?','wp-plc-shop')?><br/>
+        <label style="margin-top:-24px;"><?=__('Wie möchten Sie Ihre Bestellung erhalten ?','wp-plc-shop')?></label><br/>
         <?php foreach($oAPIResponse->deliverymethods as $oDelMethod) { ?>
-        <input type="radio" name="address_deliverymethod" value="<?=$oDelMethod->id?>"<?=($iDelivery == $oDelMethod->id) ? ' checked ' : ''?>/> <?=$oDelMethod->label?>
+        <label><input type="radio" name="address_deliverymethod" value="<?=$oDelMethod->id?>"<?=($iDelivery == $oDelMethod->id) ? ' checked ' : ''?>/>
+        <i class="<?=$oDelMethod->icon?>" style="width:60px;"></i> <?=$oDelMethod->label?></label><br/>
         <?php } ?>
     </div>
     <?php } ?>

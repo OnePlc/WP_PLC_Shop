@@ -36,7 +36,8 @@ final class Basket {
         # Register AJAX Hooks
         add_action('wp_ajax_nopriv_plc_showbasket', [ $this, 'showBasket' ] );
         add_action('wp_ajax_plc_showbasket', [ $this, 'showBasket' ] );
-        add_action('wp_ajax_nopriv_plc_addtobasket', [ $this, 'showBasket' ] );
+
+        add_action('wp_ajax_nopriv_plc_addtobasket', [ $this, 'addToBasket' ] );
         add_action('wp_ajax_plc_addtobasket', [ $this, 'addToBasket' ] );
 
         add_action('wp_ajax_nopriv_plc_popupbasket', [ $this, 'showPopupBasket' ] );
@@ -48,7 +49,7 @@ final class Basket {
         add_action('wp_ajax_nopriv_plc_basketupdatepos', [ $this, 'updateBasketPosition' ] );
         add_action('wp_ajax_plc_basketupdatepos', [ $this, 'updateBasketPosition' ] );
 
-
+        add_action( 'init', [$this, 'startShopSession']);
 
         // add shop custom rewrites
         add_action('init', [$this,'registerRewriteRules'], 10, 0);
@@ -57,6 +58,12 @@ final class Basket {
         if(get_option('plcshop_basket_icon_menu')) {
             // add cart icon to main menu
             add_filter( 'wp_nav_menu_items', [$this,'shopMenuIcon'], 10, 2 );
+        }
+    }
+
+    public function startShopSession() {
+        if(!session_id()) {
+            session_start();
         }
     }
 
@@ -138,7 +145,7 @@ final class Basket {
      */
     public function showBasket()
     {
-        //if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
             $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
             $sMode = 'default';
@@ -152,7 +159,7 @@ final class Basket {
             } else {
                 echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
             }
-        //}
+        }
         exit();
     }
     /**
@@ -163,6 +170,7 @@ final class Basket {
     public function showPopupBasket() {
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $iItemID = $_REQUEST['shop_item_id'];
+            $iVariantID = (isset($_REQUEST['shop_item_variant_id'])) ? (int)$_REQUEST['shop_item_variant_id'] : 0;
             $sItemType = $_REQUEST['shop_item_type'];
 
             # Get Articles from onePlace API
@@ -198,6 +206,7 @@ final class Basket {
                 require __DIR__.'/../view/partials/popup_basket.php';
             } else {
                 echo 'ERROR CONNECTING TO SHOP SERVER';
+                var_dump($oAPIResponse);
             }
 
 
@@ -263,10 +272,6 @@ final class Basket {
     public function addToBasket() {
         # only execute if started from our javascript
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if(!session_id()) {
-                session_start();
-            }
-
             $iItemID = $_REQUEST['shop_item_id'];
             $sItemType = $_REQUEST['shop_item_type'];
             $fItemAmount = $_REQUEST['shop_item_amount'];
@@ -290,7 +295,6 @@ final class Basket {
             if ($oAPIResponse->state == 'success') {
                 echo $oAPIResponse->message;
             } else {
-                var_dump($oAPIResponse);
                 echo 'no json success';
             }
         }
@@ -320,11 +324,12 @@ final class Basket {
             $sBasketSlug = (get_option('plcshop_basket_slug')) ? get_option('plcshop_basket_slug') : 'basket';
             # only run code once
             $this->bMenuAdded = true;
+
             # get basket from oneplace
             $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
             $iCount = 0;
             if($oAPIResponse->state == 'success') {
-                $iCount = count($oAPIResponse->items);
+                $iCount = $oAPIResponse->amount;
             }
 
             $items .= '<li class="menu-item menu-item-type-custom menu-item-object-custom" style="padding-top:12px; background:transparent;">';
@@ -332,6 +337,7 @@ final class Basket {
             $items .= '<i class="fas fa-shopping-cart shop-badge" style="color:#626261;"></i>';
             $items .= ' <span class="plc-shop-badge-counter" style="right:-12px; bottom:-10px; position:absolute; width:16px; height:16px; background:red; padding-left:4px; border-radius: 50%; line-height:16px; color:#fff; font-size:12px;">';
             $items .= $iCount.'</span></a></li>';
+            $items .= '</li>';
         }
         return $items;
     }

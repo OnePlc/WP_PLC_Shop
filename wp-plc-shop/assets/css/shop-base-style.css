@@ -2,6 +2,10 @@
     opacity:.5;
 }
 
+.plc-responsive-btn-50 {
+    width:100%;
+}
+
 .plc-swiper-container {
     padding:0 4px 0 4px;
 }
@@ -191,7 +195,28 @@ Basic Style
     width:100%; float:left;
 }
 
+.plc-shop-list-button-panel {
+    width:70px;
+}
+
+.plc-shop-list-title-box {
+    width:calc(100% - 76px);
+}
+
+.plc-slider-slide-price {
+    padding:12px;
+}
+
 @media only screen and (min-width: 768px) {
+    .plc-responsive-btn-50 {
+        width:50%;
+    }
+    .plc-shop-list-title-box {
+        width:calc(100% - 150px);
+    }
+    .plc-shop-list-button-panel {
+        width:140px;
+    }
     .cd-breadcrumb, .cd-multi-steps {
         padding: 0 1.2em;
     }

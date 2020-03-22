@@ -54,6 +54,17 @@
     </div>
     <!-- Showcase Big Widget -->
 
+    <!-- List Widget -->
+    <div class="plc-admin-settings-field">
+        <label class="plc-settings-switch">
+            <?php $bListActive = get_option( 'plcshop_elementor_widget_list_active', false ); ?>
+            <input name="plcshop_elementor_widget_list_active" type="checkbox" <?=($bListActive == 1)?'checked':''?> class="plc-settings-value" />
+            <span class="plc-settings-slider"></span>
+        </label>
+        <span><?=__('List Widget','wp-plc-shop')?></span>
+    </div>
+    <!-- List Widget -->
+
     <!-- Save Button -->
     <hr/>
     <button class="plc-admin-settings-save plc-admin-btn plc-admin-btn-primary" plc-admin-page="page-elementor">

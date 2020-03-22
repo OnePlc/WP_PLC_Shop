@@ -43,6 +43,48 @@ final class Settings {
 
         // add custom header scripts
         add_action( 'wp_head', [$this,'loadHeaderScript'] );
+
+        add_action( 'wp_body_open', [$this,'shopInfoPopup'] );
+
+    }
+
+    public function shopInfoPopup() {
+        if(!isset($_SESSION['shop-popup-showed'])) {
+            $_SESSION['shop-popup-showed'] = true;
+            ?>
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3 style="color: #8c857d; font-family: 'Playfair Display', Sans-serif; font-weight: normal;">
+                        Aktuelle News</h3>
+                    <p style="font-family: 'Function Pro Book', Sans-seif;">
+                        Liebe Gäste und Freunde des Schwitzer's,<br/>
+                        <br/>
+                        aufgrund der aktuellen Situation haben all unsere Restaurants <b>geschlossen</b>.<br/>
+                        <br/>
+                        Jedoch besteht die Möglichkeit unsere Speisen täglich zwischen 12.00 Uhr und <br/>
+                        20 Uhr zum Mitnehmen für Zuhause zu bestellen.
+                        <br/>Entdecken Sie hier unsere Speisen zum Mitnehmen
+                        <br/><br/>
+                        <b>Vorbestellung To-Go-Service</b><br/>
+                        Telefonisch: 07243 354 850<br/>
+                        Per E-Mail: info@schwitzers.com<br/>
+                        Über WhatsApp: 00491717840526<br/>
+                        <br/>
+                        Wir wünschen allen unseren treuen und loyalen Mitarbeitern in dieser Zeit bestes
+                        Durchhaltevermögen und ganz viel Kraft!
+                        <br/>Vielen Dank unseren lieben Gästen und unseren treuen Partnern, wir wünschen allen beste
+                        Gesundheit und bis ganz bald!
+                        <br/>
+                        Herzliche Grüße,<br/>
+                        Stephanie & Cédric Schwitzer und Johannes Rupp</p>
+                </div>
+
+            </div>
+            <?php
+        }
     }
 
     /**
@@ -209,6 +251,72 @@ final class Settings {
                 border:0;
             }
         </style>
+        <style>
+            /* The Modal (background) */
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+            /* Modal Content/Box */
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto; /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%; /* Could be more or less, depending on screen size */
+                max-width:600px;
+                min-width:400px;
+            }
+
+            /* The Close Button */
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            jQuery(function() {
+                // Get the modal
+                var modal = document.getElementById("myModal");
+                if(modal != undefined) {
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementsByClassName("close")[0];
+
+                    modal.style.display = "block";
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function () {
+                        modal.style.display = "none";
+                    }
+
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                }
+            });
+        </script>
         <?php
     }
 

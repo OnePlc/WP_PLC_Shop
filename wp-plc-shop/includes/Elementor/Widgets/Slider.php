@@ -75,6 +75,16 @@ class WPPLC_Shop_Slider extends \Elementor\Widget_Base {
             $aParams['filter'] = 'category';
             $aParams['filtervalue'] = $aSettings['slider_base_category'];
         }
+        $sLang = '';
+        if (defined('ICL_LANGUAGE_CODE')) {
+            if (ICL_LANGUAGE_CODE == 'en') {
+                $sLang = 'en_US';
+            }
+            if (ICL_LANGUAGE_CODE == 'de') {
+                $sLang = 'de_DE';
+            }
+            $aParams['lang'] = $sLang;
+        }
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0', $aParams);
 
         if ($oAPIResponse->state == 'success') {

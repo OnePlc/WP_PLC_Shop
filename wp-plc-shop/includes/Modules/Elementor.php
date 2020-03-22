@@ -85,6 +85,12 @@ final class Elementor {
             require_once(__DIR__ . '/../Elementor/Widgets/Singlebox.php');
             \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_Singlebox());
         }
+
+        // Article List Widget
+        if(get_option('plcshop_elementor_widget_list_active') == 1) {
+            require_once(__DIR__ . '/../Elementor/Widgets/List.php');
+            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Shop_List());
+        }
     }
 
     /**
