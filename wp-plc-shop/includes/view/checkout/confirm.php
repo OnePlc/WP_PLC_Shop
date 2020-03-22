@@ -146,11 +146,46 @@
                     </tr>
                     </tbody>
                 </table>
+                <?php if($oInfo->paymentmethod->gateway == 'paypal') {
+                    if(get_option( 'plcshop_gateway_paypal_enable_test') == 1) { ?>
+                    <script src="https://www.paypal.com/sdk/js?client-id=<?=get_option('plcshop_gateway_paypal_clientid_test')?>"></script>
+                <?php } else { ?>
+                    <script src="https://www.paypal.com/sdk/js?client-id=<?=get_option('plcshop_gateway_paypal_clientid_live')?>"></script>
+                <?php } ?>
+                    <div>
+                    <div id="paypal-button-container"></div>
+                    <script>
+                        paypal.Buttons({
+                            createOrder: function(data, actions) {
+                                // This function sets up the details of the transaction, including the amount and line item details.
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: {
+                                            value: '<?=number_format($dBasketTotal,2,'.','')?>'
+                                        }
+                                    }]
+                                });
+                            },
+                            onApprove: function(data, actions) {
+                                // This function captures the funds from the transaction.
+                                return actions.order.capture().then(function(details) {
+                                    jQuery.post(basketAjax.ajaxurl, {
+                                        action: 'plc_showbasket',
+                                        plc_basket_step: 'paypal'
+                                    }, function (retHTML) {
+                                        jQuery('.plc-shop-form').replaceWith(retHTML);
+                                    });
+                                });
+                            }
+                        }).render('#paypal-button-container');
+                    </script>
+                    </div>
+                <?php } else { ?>
                 <button type="submit" class="plc-shop-checkout-button" style="border:0;">
                     <i class="<?=str_replace(['fa-3x','fa-4x','fa-2x'],[],$oInfo->paymentmethod->icon)?>" style="width:20px;"></i>
                     Jetzt mit <?=$oInfo->paymentmethod->label?> bezahlen
                 </button>
-                <?php
+                <?php }
                 switch($oInfo->paymentmethod->gateway) {
                     case 'stripe':
                         if(get_option('plcshop_gateway_stripe_enable_test') == 1) { ?>

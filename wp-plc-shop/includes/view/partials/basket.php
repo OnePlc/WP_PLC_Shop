@@ -106,12 +106,13 @@ if (count($aItems) > 0) { ?>
                         <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dBasketTotal, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
                     </td>
                 </tr>
+                <!-- make it an option ...................
                 <tr>
                     <th>Versand (nur bei Postversand)</th>
                     <td data-title="Versand">
                         <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dDeliveryFee, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
                     </td>
-                </tr>
+                </tr> --->
                 <tr>
                     <th>Gesamtsumme</th>
                     <td data-title="Gesamtsumme">

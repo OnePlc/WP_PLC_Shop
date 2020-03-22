@@ -146,18 +146,32 @@ final class Basket {
     public function showBasket()
     {
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
-            $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
-            $sMode = 'default';
-            if($oAPIResponse->state == 'success') {
-                $oBasket = $oAPIResponse->oBasket;
-                $aSettings = [
-                    'btn_checkout_text' => 'Zur Kasse',
-                    'btn_checkout_selected_icon' => ['value' => 'fas fa-cash-register'],
-                ];
-                require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
+            if(isset($_REQUEST['plc_basket_step'])) {
+                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/initpayment', ['shop_session_id'=>session_id()]);
+                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+                $sMode = 'default';
+                if($oAPIResponse->state == 'success') {
+                    $aSettings = [];
+                    $aSettings['payment_paypal_infotext'] = 'Vielen Dank für Ihre Bestellung. Wir haben Ihnen per E-Mail eine Bestätigung Ihrer Bestellung zukommen lassen. Vielen Dank für Ihre Zahlung per Paypal. Ihre Bestellung ist bereits in kurzer Zeit unterwegs zu Ihnen.';
+                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/paypal.php';
+                } else {
+                    echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
+                    echo '<pre>'.var_dump($oAPIResponse).'</pre>';
+                }
             } else {
-                echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
+                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/basket/wordpress/get', ['shop_session_id'=>session_id()]);
+                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
+                $sMode = 'default';
+                if($oAPIResponse->state == 'success') {
+                    $oBasket = $oAPIResponse->oBasket;
+                    $aSettings = [
+                        'btn_checkout_text' => 'Zur Kasse',
+                        'btn_checkout_selected_icon' => ['value' => 'fas fa-cash-register'],
+                    ];
+                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/partials/basket.php';
+                } else {
+                    echo 'ERROR CONNECTING TO SHOP BASKET SERVER';
+                }
             }
         }
         exit();
@@ -336,7 +350,7 @@ final class Basket {
             $items .= '<a href="/'.$sBasketSlug.'" style="margin:0 12px 0 12px; padding:0;">';
             $items .= '<i class="fas fa-shopping-cart shop-badge" style="color:#626261;"></i>';
             $items .= ' <span class="plc-shop-badge-counter" style="right:-12px; bottom:-10px; position:absolute; width:16px; height:16px; background:red; padding-left:4px; border-radius: 50%; line-height:16px; color:#fff; font-size:12px;">';
-            $items .= $iCount.'</span></a></li>';
+            $items .= (int)$iCount.'</span></a></li>';
             $items .= '</li>';
         }
         return $items;

@@ -8,7 +8,7 @@
                     ? $oAPIResponse->paymentmethodselected->id : $oAPIResponse->paymentmethods[0]->id;
                 foreach($oAPIResponse->paymentmethods as $oPayM) {
                     // paypal not supported yet
-                    if($oPayM->gateway == 'paypal') {
+                    if($oPayM->gateway == 'paypal' && !is_user_logged_in()) {
                         continue;
                     }
 

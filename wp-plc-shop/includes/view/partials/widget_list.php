@@ -28,10 +28,10 @@
                         </span>
                         <a class="plc-shop-additem-tobasket plc-calendar-widget-button"
                            href="#<?= $oEvent->id ?>"
-                           style="margin-top:4px; padding-top:4px; float:left; width:100%; height:31px; text-align:center;"
+                           style="display:inline-block; margin-top:4px; padding-top:4px; float:left; width:100%; height:31px; text-align:center;"
                            plc-item-type="variant" plc-item-variant="<?= $oVar->id ?>">
                             <i class="<?= $aSettings['btn1_selected_icon']['value'] ?>" aria-hidden="true"></i>
-                            &nbsp;<label class="elementor-hidden-phone elementor-hidden-tablet"><?= $aSettings['btn1_text'] ?></label>
+                            &nbsp;<label class="elementor-hidden-phone elementor-hidden-tablet" style="cursor:pointer;"><?= $aSettings['btn1_text'] ?></label>
                         </a>
                     </div>
                 </div>

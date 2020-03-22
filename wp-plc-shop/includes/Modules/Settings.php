@@ -68,11 +68,13 @@ final class Settings {
                         20 Uhr zum Mitnehmen für Zuhause zu bestellen.
                         <br/>Entdecken Sie hier unsere Speisen zum Mitnehmen
                         <br/><br/>
-                        <b>Vorbestellung To-Go-Service</b><br/>
+                        <a href="/to-go-shop" style="text-decoration:underline">
+                            <b>Vorbestellung To-Go-Service</b><br/></a>
                         Telefonisch: 07243 354 850<br/>
                         Per E-Mail: info@schwitzers.com<br/>
                         Über WhatsApp: 00491717840526<br/>
-                        <br/>
+                        <b><a href="/to-go-shop" style="text-decoration:underline">Oder bequem hier über unseren Online-Shop!</a></b>
+                        <br/><br/>
                         Wir wünschen allen unseren treuen und loyalen Mitarbeitern in dieser Zeit bestes
                         Durchhaltevermögen und ganz viel Kraft!
                         <br/>Vielen Dank unseren lieben Gästen und unseren treuen Partnern, wir wünschen allen beste
@@ -256,7 +258,7 @@ final class Settings {
             .modal {
                 display: none; /* Hidden by default */
                 position: fixed; /* Stay in place */
-                z-index: 1; /* Sit on top */
+                z-index: 999999; /* Sit on top */
                 left: 0;
                 top: 0;
                 width: 100%; /* Full width */

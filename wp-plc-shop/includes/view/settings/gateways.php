@@ -49,6 +49,41 @@
 
     <h3>Paypal</h3>
 
+    <!-- Enable Paypal TEST Mode -->
+    <div class="plc-admin-settings-field">
+        <label class="plc-settings-switch">
+            <?php $bEnableTest = get_option( 'plcshop_gateway_paypal_enable_test', false ); ?>
+            <input name="plcshop_gateway_paypal_enable_test" type="checkbox" <?=($bEnableTest == 1)?'checked':''?> class="plc-settings-value" />
+            <span class="plc-settings-slider"></span>
+        </label>
+        <span>Enable Paypal SANDBOX Mode</span>
+    </div>
+    <!--Enable Paypal TEST Mode -->
+
+    <!-- Paypal Client ID (SANDBOX) -->
+    <div class="plc-admin-settings-field">
+        <?php $sCurVal = get_option('plcshop_gateway_paypal_clientid_test'); ?>
+        <input type="text" class="plc-settings-value" name="plcshop_gateway_paypal_clientid_test" value="<?=$sCurVal?>" style="width:50%; min-width:200px;" />
+        <span>Paypal Client ID (SANDBOX)</span>
+    </div>
+    <!-- Paypal Client ID (SANDBOX) -->
+
+    <!-- Paypal Client Secret (SANDBOX) -->
+    <div class="plc-admin-settings-field">
+        <?php $sCurVal = get_option('plcshop_gateway_paypal_clientsecret_test'); ?>
+        <input type="text" class="plc-settings-value" name="plcshop_gateway_paypal_clientsecret_test" value="<?=$sCurVal?>" style="width:50%; min-width:200px;" />
+        <span>Paypal Client Secret (SANDBOX)</span>
+    </div>
+    <!-- Paypal Client Secret (SANDBOX) -->
+
+    <!-- Paypal Client ID (LIVE) -->
+    <div class="plc-admin-settings-field">
+        <?php $sCurVal = get_option('plcshop_gateway_paypal_clientid_live'); ?>
+        <input type="text" class="plc-settings-value" name="plcshop_gateway_paypal_clientid_live" value="<?=$sCurVal?>" style="width:50%; min-width:200px;" />
+        <span>Paypal Client ID (LIVE)</span>
+    </div>
+    <!-- Paypal Client ID (LIVE) -->
+
     <h3>Prepay</h3>
 
     <!-- Bank Account Data -->

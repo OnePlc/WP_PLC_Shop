@@ -140,6 +140,9 @@ class WPPLC_Shop_Basket extends \Elementor\Widget_Base {
                                 case 'instore':
                                     require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/instore.php';
                                     break;
+                                case 'paypal':
+                                    require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/paypal.php';
+                                    break;
                                 case 'stripe':
                                     require WPPLC_SHOP_PLUGIN_MAIN_DIR.'/includes/view/payment/stripe.php';
                                     break;
