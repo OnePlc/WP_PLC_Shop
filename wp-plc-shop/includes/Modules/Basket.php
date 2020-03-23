@@ -272,8 +272,6 @@ final class Basket {
             } else {
                 echo 'ERROR CONNECTING TO SHOP SERVER';
             }
-
-
         }
         exit();
     }

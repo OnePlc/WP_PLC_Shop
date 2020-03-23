@@ -64,7 +64,7 @@ final class Settings {
                         <br/>
                         aufgrund der aktuellen Situation haben all unsere Restaurants <b>geschlossen</b>.<br/>
                         <br/>
-                        Jedoch besteht die Möglichkeit unsere Speisen täglich zwischen 12.00 Uhr und <br/>
+                        Jedoch besteht die Möglichkeit unsere Speisen täglich zwischen 12.30 Uhr und <br/>
                         20 Uhr zum Mitnehmen für Zuhause zu bestellen.
                         <br/>Entdecken Sie hier unsere Speisen zum Mitnehmen
                         <br/><br/>

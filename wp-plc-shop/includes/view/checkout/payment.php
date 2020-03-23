@@ -7,11 +7,6 @@
                 $iPaymentSelected = ($oAPIResponse->paymentmethodselected->id != 0)
                     ? $oAPIResponse->paymentmethodselected->id : $oAPIResponse->paymentmethods[0]->id;
                 foreach($oAPIResponse->paymentmethods as $oPayM) {
-                    // paypal not supported yet
-                    if($oPayM->gateway == 'paypal' && !is_user_logged_in()) {
-                        continue;
-                    }
-
                     if($oPayM->gateway == 'instore') {
                         if($oAPIResponse->deliverymethod->gateway != 'pickup') {
                             continue;

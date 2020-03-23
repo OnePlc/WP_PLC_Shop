@@ -3,7 +3,9 @@
     $sLastMonth = '';
     $iCount = 0;
     $iBaseWidth = 150;
-
+    if($aSettings['compactlist_list_limit'] == 10) {
+        $aSettings['compactlist_list_limit'] = 25;
+    }
     foreach ($aEvents as $oEvent) {
         if ($iCount == $aSettings['compactlist_list_limit']) {
             break;
@@ -20,10 +22,10 @@
                         <span><?= $oEvent->description ?></span>
                     </div>
                     <div class="plc-shop-list-button-panel" style="float:left; margin-left:4px; display: inline-block;">
-                        <span class="plc-calendar-widget-button plc-responsive-btn-50" style="float:left; padding-right:4px;">
+                        <span class="plc-calendar-widget-button plc-responsive-btn-50" style="float:left; height:40px; padding:6px;">
                             <?= ($oVar->label != '') ? $oVar->label : '-' ?>
                         </span>
-                        <span class="plc-calendar-widget-button plc-responsive-btn-50" style="float:left;">
+                        <span class="plc-calendar-widget-button plc-responsive-btn-50" style="float:left; height:40px; padding:6px; text-align:right;">
                             <?= number_format($oVar->price,2,',','.') ?>
                         </span>
                         <a class="plc-shop-additem-tobasket plc-calendar-widget-button"

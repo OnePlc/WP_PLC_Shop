@@ -92,9 +92,10 @@ if (count($aItems) > 0) { ?>
 
     <div style="width:100%; display: inline-block;">
         <?php
+        /**
         if($dBasketTotal >= 100) {
             $dDeliveryFee = 0;
-        }
+        } **/
         ?>
         <div style="float:right;" class="plc-shop-form plc-shop-basket-summary">
             <h4>Warenkorb Summe</h4>
@@ -116,7 +117,7 @@ if (count($aItems) > 0) { ?>
                 <tr>
                     <th>Gesamtsumme</th>
                     <td data-title="Gesamtsumme">
-                        <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dBasketTotal + $dDeliveryFee, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
+                        <?=(get_option('plcshop_currency_pos') == 'before') ? get_option('plcshop_currency_main').' ' : ''?><?= number_format($dBasketTotal, 2, ',', '.') ?><?=(get_option('plcshop_currency_pos') == 'after') ? ' '.get_option('plcshop_currency_main') : ''?>
                     </td>
                 </tr>
                 </tbody>

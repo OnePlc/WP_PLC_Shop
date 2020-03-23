@@ -73,6 +73,7 @@ class WPPLC_Shop_List extends \Elementor\Widget_Base {
         # Get Articles from onePlace API
         $aParams = [
             'listmode' => 'entity',
+            'listmodefilter' => 'webonly',
             'listsorting' => 'websort',
         ];
 
